@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    
+    <package name="publiclogin" extends="abstract_struts" namespace="/">		
+		<action name="Logout" class="action.Logout">
+			<result name="logout">/index.jsp</result>
+		</action>	
+		
+		<action name="CoanswView" class="action.CoanswViewAction">
+			<result>/jsp/CoanswView.jsp</result>
+		</action>
+		
+		<action name="StayTimeManager" class="action.StayTimeManagerAction">
+			<result>/jsp/StayTimeManager.jsp</result>
+		</action>
+		
+	</package>
+    
+	<package name="rollCall" extends="abstract_struts" namespace="/">		
+		<action name="RollCall" class="action.rollCall.RollCallAction">
+			<result name="intro">/jsp/RollCall.jsp</result>
+			<result name="rollCall">/jsp/RollCall/call.jsp</result>
+			<result name="rollView">/jsp/RollCall/view.jsp</result>
+			<result name="success" type="redirect">RollCall</result>
+		</action>
+		
+		<action name="DilgApp" class="action.rollCall.DilgAppAction">
+			<result name="intro">/jsp/DilgApp.jsp</result>
+		</action>
+		
+		<action name="AddPubLeave" class="action.rollCall.AddPubLeaveAction">
+			<result name="intro">/jsp/AddPubLeave.jsp</result>
+		</action>
+		
+		<!-- 缺曠與成績趨勢 -->
+		<action name="DilgView" class="action.rollCall.DilgViewAction">
+			<result>/jsp/DilgView.jsp</result>
+			<result name="detail">/jsp/DilgView/detail.jsp</result>
+			<result name="score">/jsp/DilgView/print/score.jsp</result>
+			<result name="exScore">/jsp/DilgView/print/exScore.jsp</result>
+			<result name="nonexam">/jsp/DilgView/print/nonexam.jsp</result>			
+		</action>
+		
+		<action name="OneThirdView" class="action.rollCall.OneThirdViewViewAction">
+			<result>/jsp/OneThirdViewView.jsp</result>
+			<result name="creatSearch">/jsp/OneThirdViewView.jsp</result>
+		</action>
+	</package>	 
+	
+	<package name="language" extends="abstract_struts" namespace="/">		
+		<action name="ExamsManager" class="action.language.ExamsManagerAction">
+			<result>/jsp/language/ExamsManager.jsp</result>
+			<result name="edit">/jsp/language/ExamsManager/edit.jsp</result>
+		</action>
+	</package>	
+	
+	<package name="Score" extends="abstract_struts" namespace="/">		
+		<action name="ScoreManager" class="action.ScoreManagerAction">
+			<result>/jsp/ScoreManager.jsp</result>
+			<result name="norRat">/jsp/score/norRat.jsp</result>
+			<result name="engRat">/jsp/score/engRat.jsp</result>
+			<result name="spoRat">/jsp/score/spoRat.jsp</result>
+		</action>
+	</package>
+	
+	<package name="tutor" extends="abstract_struts" namespace="/">		
+		<action name="CareForStudents" class="action.CareForStudentsAction">
+			<result>/jsp/CareForStudents.jsp</result>
+		</action>
+	</package>	
+	
+	<package name="elearning" extends="abstract_struts" namespace="/">		
+		<action name="ElearningReserve" class="action.ElearinigReserveAction">
+			<result>/jsp/ElearinigReserve.jsp</result>
+		</action>
+	</package>
+</struts>
