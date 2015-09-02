@@ -13,12 +13,15 @@ public class StayTimeManagerAction extends BaseAction{
 	
 	public String execute(){
 		
+		String year=getContext().getAttribute("school_year").toString();
+		String term=getContext().getAttribute("school_term").toString();
+		
 		String userOid=df.sqlGetStr("SELECT Oid FROM empl WHERE idno='"+getSession().getAttribute("userid")+"'");
 		//取留校資訊
 		Map rule=df.sqlGetMap("SELECT (SELECT cdate FROM SYS_CALENDAR WHERE name='staytime_end')as over,"
 		+ "(SELECT COUNT(*)FROM Empl_stay_hist WHERE idno='"+getSession().getAttribute("userid")+"' AND edate>'"+getContext().getAttribute("staytime_end")+"')as cnt,"
-		+ "IFNULL((SELECT COUNT(*) FROM Empl_stay_info WHERE idno=e.idno AND kind='1'AND school_year='"+getContext().getAttribute("school_year")+"'AND school_term='"+getContext().getAttribute("school_term")+"'),0)as tech_stay,"//課後輔導
-		+ "IFNULL((SELECT COUNT(*) FROM Empl_stay_info WHERE idno=e.idno AND kind='2'AND school_year='"+getContext().getAttribute("school_year")+"'AND school_term='"+getContext().getAttribute("school_term")+"'),0)as tutor_stay,"//生活輔導
+		+ "IFNULL((SELECT COUNT(*) FROM Empl_stay_info WHERE idno=e.idno AND kind='1'AND school_year='"+year+"'AND school_term='"+term+"'),0)as tech_stay,"//課後輔導
+		+ "IFNULL((SELECT COUNT(*) FROM Empl_stay_info WHERE idno=e.idno AND kind='2'AND school_year='"+year+"'AND school_term='"+term+"'),0)as tutor_stay,"//生活輔導
 		+ "IFNULL((SELECT time_stay FROM Empl_techlimit WHERE idno=e.idno),0)as time_cut,"//扣除額
 		+ "IFNULL((SELECT time FROM Empl_techlimit WHERE idno=e.idno),0)as thour "//應留校時間
 		//+ "IFNULL((SELECT COUNT(*)FROM Class WHERE tutor=e.idno),0)as tutor "//生活輔導時間
@@ -47,7 +50,7 @@ public class StayTimeManagerAction extends BaseAction{
 		request.setAttribute("rule", rule);		
 		request.setAttribute("cs", cs);
 		request.setAttribute("st", df.sqlGet("SELECT e.kind, e.week, e.period as begin, e.period as end, c.name as chi_name FROM "
-		+ "Empl_stay_info e, CODE_TEACHER_STAY c WHERE c.id=e.kind AND e.idno='"+getSession().getAttribute("userid")+"'"));
+		+ "Empl_stay_info e, CODE_TEACHER_STAY c WHERE c.id=e.kind AND c.school_year='"+year+"' AND c.school_term='"+term+"' e.idno='"+getSession().getAttribute("userid")+"'"));
 		request.setAttribute("place", df.sqlGetMap("SELECT * FROM Empl_stay_place WHERE idno='"+getSession().getAttribute("userid")+"'"));
 		return SUCCESS;
 	}
