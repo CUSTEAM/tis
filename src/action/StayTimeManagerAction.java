@@ -50,7 +50,7 @@ public class StayTimeManagerAction extends BaseAction{
 		request.setAttribute("rule", rule);		
 		request.setAttribute("cs", cs);
 		request.setAttribute("st", df.sqlGet("SELECT e.kind, e.week, e.period as begin, e.period as end, c.name as chi_name FROM "
-		+ "Empl_stay_info e, CODE_TEACHER_STAY c WHERE c.id=e.kind AND c.school_year='"+year+"' AND c.school_term='"+term+"' e.idno='"+getSession().getAttribute("userid")+"'"));
+		+ "Empl_stay_info e, CODE_TEACHER_STAY c WHERE c.id=e.kind AND e.school_year='"+year+"' AND e.school_term='"+term+"' AND e.idno='"+getSession().getAttribute("userid")+"'"));
 		request.setAttribute("place", df.sqlGetMap("SELECT * FROM Empl_stay_place WHERE idno='"+getSession().getAttribute("userid")+"'"));
 		return SUCCESS;
 	}
