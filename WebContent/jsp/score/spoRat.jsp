@@ -27,8 +27,8 @@ data-placement="right" class="elary btn btn-small btn-warning">?</div>
 		<td>學號</td>
 		<td>姓名</td>
 		<td>術科成績(50%)</td>
-		<td>平時成績(30%)</td>
-		<td>學科成績(20%)</td>
+		<td>平時成績(40%)</td>
+		<td>學科成績(10%)</td>
 		<td>學期成績(100%)</td>
 	</tr>
 	<c:forEach items="${students}" var="s" varStatus="c">
@@ -37,8 +37,8 @@ data-placement="right" class="elary btn btn-small btn-warning">?</div>
 		<td>學號</td>
 		<td>姓名</td>
 		<td>術科成績(50%)</td>
-		<td>平時成績(30%)</td>
-		<td>學科成績(20%)</td>
+		<td>平時成績(40%)</td>
+		<td>學科成績(10%)</td>
 		<td>學期成績(100%)</td>
 	</tr>	
 	</c:if>
@@ -134,7 +134,7 @@ function sum(score1, score2, score3, score){
 	score2=document.getElementById(score2);
 	score3=document.getElementById(score3);
 	score=document.getElementById(score);
-	score.value=Math.round((score1.value*0.5)+(score2.value*0.3)+(score3.value*0.2));
+	score.value=Math.round((score1.value*0.5)+(score2.value*0.4)+(score3.value*0.1));
 }
 </script>
 </body>
