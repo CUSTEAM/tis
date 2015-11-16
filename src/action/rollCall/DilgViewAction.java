@@ -522,7 +522,7 @@ public class DilgViewAction extends BaseAction{
 		begin.setTime((Date) getContext().getAttribute("date_rollcall_begin"));
 		sql=new StringBuilder("SELECT d.name,");
 		for(int i=1; i<=17; i++){			
-			sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE di.date>='"+sf.format(begin.getTime())+"'");
+			sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE (abs!='5'&&abs!='6')AND di.date>='"+sf.format(begin.getTime())+"'");
 			begin.add(Calendar.DAY_OF_YEAR, 7);
 			sql.append("AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
 		}
