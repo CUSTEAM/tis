@@ -129,7 +129,7 @@ $(document).ready(function() {
 </display:table>    
 <script>
 var today=new Date();//86400000
-var end = today.valueOf()+(86400000*7);
+var end = today.valueOf()+(86400000*60);
 var begin=today.valueOf()-(86400000*7);
 
 
