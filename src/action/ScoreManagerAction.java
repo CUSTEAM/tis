@@ -121,8 +121,7 @@ public class ScoreManagerAction extends BaseAction{
 		//expiry mid
 		
 		edper=(Date)getContext().getAttribute("date_exam_mid");
-		stper=(Date)getContext().getAttribute("date_exam_mid_start");
-		if(now.getTime()>edper.getTime()||now.getTime()<stper.getTime()){request.setAttribute("date1", "expiry");}
+		if(now.getTime()>edper.getTime()){request.setAttribute("date1", "expiry");}
 		//expiry fin		
 		if(getContext().getAttribute("school_term").equals("2")){
 			//under half
@@ -133,18 +132,12 @@ public class ScoreManagerAction extends BaseAction{
 			}else{
 				//not graduating class
 				edper=(Date)getContext().getAttribute("date_exam_fin");
-				stper=(Date)getContext().getAttribute("date_exam_fin_start");
-				if(now.getTime()>edper.getTime()||now.getTime()<stper.getTime()){request.setAttribute("date2", "expiry");}
+				if(now.getTime()>edper.getTime()){request.setAttribute("date2", "expiry");}
 			}
 		}else{
 			//upper half
-			/*
 			edper=(Date)getContext().getAttribute("date_exam_fin");
 			if(now.getTime()>edper.getTime()){request.setAttribute("date2", getContext().getAttribute("exam_fin"));}
-			*/
-			edper=(Date)getContext().getAttribute("date_exam_fin");
-			stper=(Date)getContext().getAttribute("date_exam_fin_start");
-			if(now.getTime()>edper.getTime()||now.getTime()<stper.getTime()){request.setAttribute("date2", getContext().getAttribute("exam_fin"));}
 		}
 				
 		if(getContext().getAttribute("school_term").equals("2")){
