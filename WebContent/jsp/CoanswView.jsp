@@ -78,21 +78,19 @@ function drawChart() {
 </script>  
 </head>
 <body>
-<div class="alert">
-<button type="button" class="close" data-dismiss="alert">&times;</button>
+<div class="bs-callout bs-callout-info" id="callout-helper-pull-navbar">
 <strong>${school_year}學年第${school_term}學期</strong>教學評量期間: <small class="text-warning">${fn:substring(coansw_begin, 0, 10)} 至 ${fn:substring(coansw_end, 0, 10)}</small>
 
 </div>
 
-<div class="accordion" id="accordion2">	
-	<div class="accordion-group">
-		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#coll"><i style="margin-top:2px;" class="icon-eye-open"></i> 點選檢視歷年資料</a>
+<div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+	<div class="panel panel-primary">
+		<div class="panel-heading" role="tab" id="headingOne">
+			<a data-toggle="collapse" style="color:#ffffff;" data-parent="#accordion2" href="#coll">點選檢視歷年資料</a>
 		</div>
 		<div id="coll" class="accordion-body collapse in">
 			<div class="accordion-inner">			
 			<table class="table">
-			<c:forEach items="${years}" var="y">
 			<tr>
 				<td>學年</td>
 				<td>學期</td>
@@ -103,6 +101,8 @@ function drawChart() {
 				<td>有效樣本數</td>
 				<td>平均值</td>
 			</tr>
+			<c:forEach items="${years}" var="y">
+			
 			<c:forEach items="${y.coansw}" var="c">			
 			<tr>
 				<td>${y.school_year}</td>
@@ -122,97 +122,133 @@ function drawChart() {
 	</div>	
 </div>
 
-<div class="row-fluid">
-<div class="span4">
-<table class="table table-bordered">
-	<tr>
-		<td>
-		<p align="left"><button rel="popover" title="說明" data-content="50為基準以1至5分對應60至100分0為基準以1至5分對應10至100分" data-placement="right" class="btn btn-warning help" type="button">?</button></p>
-		<div id="lineChart" style="height:300px;"></div>
-		<span class="label label-important">依授課班級顯示平均值</span>
-		</td>
-	</tr>
-</table>
+<div class="row">
+<div class="col-xs-12 col-md-4">
 
-<table class="table">
-	<tr>
-		<td>開課班級</td>
-		<td>課程名稱</td>
-		<td>平均值</td>
-	</tr>
-	<c:forEach items="${lineData}" var="l">
-	<tr>
-		<td>${l.ClassName}</td>
-		<td>${l.chi_name}</td>
-		<td>${l.score}</td>
-	</tr>
-	</c:forEach>
-</table>
+<div class="panel panel-primary">
+  	<div class="panel-heading">問卷結果統計</div>
+  	<div class="panel-body">
+    	<p>藍色區塊以50為基準, 由1至5分對應60至100分</p>
+    	<p>灰色區塊以0為基準, 由1至5分對應20至100分</p>
+  	</div>
+	<table class="table table-bordered">
+		<tr>
+			<td>
+	
+			<div id="lineChart" style="height:340px;"></div>
+			
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="panel panel-primary">
+  	<div class="panel-heading">課程列表</div>
+	<table class="table">
+		<tr>
+			<td>開課班級</td>
+			<td>課程名稱</td>
+			<td>平均值</td>
+		</tr>
+		<c:forEach items="${lineData}" var="l">
+		<tr>
+			<td>${l.ClassName}</td>
+			<td>${l.chi_name}</td>
+			<td>${l.score}</td>
+		</tr>
+		</c:forEach>
+	</table>
+</div>
 
 
 </div>
 
-<div class="span4">
-<table class="table table-bordered" style="position: relative;">
-	<tr>
-		<td>
-		<p><button rel="popover" title="說明" data-content="不同顏色線條所佔面積為各題平均,圖表排除無效問卷僅顯示有效問卷,圖表中特別凹陷處代表偵錯題" data-placement="right" class="btn btn-warning help" type="button">?</button></p>
-		<center><canvas id="radarChart" height="300"></canvas></center>
-		<div class="control-group info" style="position: absolute; top:10px; right:10px;">		
-		<div class="input-prepend">
-		<span class="add-on">選擇班級</span>
-		<select onChange="changeData4Radar(this.value)">
-				<c:forEach  items="${coansw}" var="c" varStatus="s">
-				<option value="${s.index}">${c.ClassName}${c.chi_name}</option>
-				</c:forEach>
-			</select>
-		</div>			
-		</div>
-		<span class="label label-important">依問卷題目顯示平均值</span>
-		</td>
-	</tr>
-</table>
-<table class="table">
-	<c:forEach items="${labels}" var="l">
-	<tr>
-		<td nowrap><small>第${l.sequence}題</small></td>
-		<td width="100%"><small>${l.question}<c:if test="${!empty l.debug}">
-		<span class="label label-info">偵錯題</span></c:if></small></td>
-	</tr>
-	</c:forEach>
-</table>
+<div class="col-xs-12 col-md-4">
+<div class="panel panel-primary">
+  	<div class="panel-heading">問卷題目作答分析</div>
+  	<div class="panel-body">
+    	<p>圖表已排除無效問卷, 僅顯示有效問卷</p>
+    	<p>圖表中反向延伸處代表偵錯題</p>
+  	</div>
+	<table class="table table-bordered" style="position: relative;">
+		<tr>
+			<td>
+			<div class="input-group">
+    		<span class="input-group-addon">選擇班級</span>
+			<select class="form-control"onChange="changeData4Radar(this.value)">
+					<c:forEach  items="${coansw}" var="c" varStatus="s">
+					<option value="${s.index}">${c.ClassName}${c.chi_name}</option>
+					</c:forEach>
+				</select>
+			</div>
+			<center><canvas id="radarChart" height="300"></canvas></center>
+					
+			
+				
+					
+			
+			</td>
+		</tr>
+	</table>
 </div>
 
-<div class="span4">
-<table class="table table-bordered">
-	<tr>
-		<td>
-		<p><button rel="popover" title="說明" data-content="${eff},${sam},${cnt}" data-placement="right" class="btn btn-warning help" type="button">?</button></p>
-		<div id="pieChart" style="height:300px;"></div>
-		<span class="label label-important">樣本數統計</span>
-		</td>
-	</tr>
-</table>
-<table class="table">
-	<tr>
-		<td nowrap>班級</td>
-		<td nowrap>課程</td>
-		<td nowrap>選課</td>
-		<td nowrap>樣本</td>
-		<td nowrap>有效</td>
-		<td nowrap>答案</td>
-	</tr>
-	<c:forEach items="${coansw}" var="c">
-	<tr>
-		<td><small>${c.ClassName}</small></td>
-		<td><small>${c.chi_name}</small></td>
-		<td>${c.stu_select}</td>
-		<td>${c.samples}</td>
-		<td>${c.effsamples}</td>
-		<td nowrap><a href="/tis/Print/CoanswPrint?Oid=${c.Oid}">檢視</a></td>
-	</tr>
-	</c:forEach>
-</table>
+<div class="panel panel-primary">
+  	<div class="panel-heading">問卷題目列表</div>
+	<table class="table">
+		<c:forEach items="${labels}" var="l">
+		<tr>
+			<td nowrap><small>第${l.sequence}題</small></td>
+			<td width="100%"><small>${l.question}<c:if test="${!empty l.debug}">
+			<span class="label label-info">偵錯題</span></c:if></small></td>
+		</tr>
+		</c:forEach>
+	</table>
+</div>
+</div>
+<div class="col-xs-12 col-md-4">
+<div class="panel panel-primary">
+  	<div class="panel-heading">作答人數統計</div>
+  	<div class="panel-body">
+    	<p>藍色區塊以50為基準, 由1至5分對應60至100分</p>
+    	<p>灰色區塊以0為基準, 由1至5分對應20至100分</p>
+  	</div>
+	<table class="table table-bordered">
+		<tr>
+			<td>
+			<div id="pieChart" style="height:310px;"></div>
+			<span class="label label-important">樣本數統計</span>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="panel panel-primary">
+  	<div class="panel-heading">作答人數列表</div>
+  	<div class="panel-body">
+    	<p>藍色區塊以50為基準, 由1至5分對應60至100分</p>
+    	<p>灰色區塊以0為基準, 由1至5分對應20至100分</p>
+  	</div>
+	<table class="table">
+		<tr>
+			<td nowrap>班級</td>
+			<td nowrap>課程</td>
+			<td nowrap>選課</td>
+			<td nowrap>樣本</td>
+			<td nowrap>有效</td>
+			<td nowrap>答案</td>
+		</tr>
+		<c:forEach items="${coansw}" var="c">
+		<tr>
+			<td><small>${c.ClassName}</small></td>
+			<td><small>${c.chi_name}</small></td>
+			<td>${c.stu_select}</td>
+			<td>${c.samples}</td>
+			<td>${c.effsamples}</td>
+			<td nowrap><a href="/tis/Print/CoanswPrint?Oid=${c.Oid}">檢視</a></td>
+		</tr>
+		</c:forEach>
+	</table>
+</div>
 </div>
 
 

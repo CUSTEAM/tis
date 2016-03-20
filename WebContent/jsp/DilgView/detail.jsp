@@ -27,42 +27,53 @@ $(document).ready(function() {
 
      
 <!-- Modal -->
-<div id="stdInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="stdNameNo"></h3>
-</div>
-<div class="modal-body" id="info">
-</div>
-<div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">關閉</button>
-</div>
+<div class="modal fade" id="stdInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">×</button>
+		<h3 id="stdNameNo"></h3>
+      </div>
+      <div class="modal-body" id="info"></div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">關閉</button>
+	</div>
+    </div>
+  </div>
 </div>
 
 <form action="DilgView" method="post">
-<div class="alert">
-	<button type="button" class="close" data-dismiss="alert">&times;</button>	
-	<strong>學生缺曠記錄</strong>列表, 
-	<button name="method:creatSearch" type="submit" class="btn">查看其他班級狀況</button>
+<div class="bs-callout bs-callout-info" id="callout-helper-pull-navbar">
+	<h3>學生缺曠記錄</h3>
+	<p><button type="button" class="close" data-dismiss="alert">&times;</button>
+	
+	<div class="btn-group" role="group" aria-label="...">
+	<button name="method:creatSearch" type="submit" class="btn btn-default">查看其他班級狀況</button>
 	<a href="DilgView"class="btn btn-danger">返回班級列表</a>
-	<div id="funbtn" rel="popover" title="說明" data-content="每個欄位均可排序" data-placement="right" class="btn btn-info">?</div>	
-</div>     
-    <display:table name="${myStudents}" id="row" class="table table-condensed" sort="list" excludedParams="*" >
+		
+	</div>
+	<div id="funbtn" rel="popover" title="說明" data-content="每個欄位均可排序" data-placement="right" class="btn btn-info">?</div>
+</div>
+<div class="panel panel-primary">
+  <!-- Default panel contents -->
+  <div class="panel-heading">${myStudents[0].depart_class}</div>
+  
+    <display:table name="${myStudents}" id="row" class="table table-condensed" sort="list" excludedParams="*" requestURI="DilgView?ClassNo=${myStudents[0].depart_class}">
   	<display:column title="學號" property="student_no" sortable="true" />
   	<display:column title="姓名" property="student_name" sortable="true"/> 
-  	<display:column title="">  	
-  	<div class="btn-group">
-    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-list" style="margin-top:1px;"></i></a>
-    <ul class="dropdown-menu">
-    	<li><a href="#stdInfo" data-toggle="modal" onClick="getStudentTime('${row.student_no}', '${row.student_name}')">本學期課表</a></li>
-    	<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${row.student_no}', '${row.student_name}', '')">程缺課記錄</a></li>
-    	<li><a href="#stdInfo" data-toggle="modal" onClick="getStdContectInfo('${row.student_no}', '${row.student_name}')">連絡資訊</a></li>
-    	<li><a href="#stdInfo" data-toggle="modal" onClick="getStdScoreInfo('${row.student_no}', '${row.student_name}')">歷年成績</a></li>
-    	<li><a href="/CIS/Portfolio/ListMyStudents.do" target="_blank">學習歷程檔案</a></li>
-    </ul>
-    
-    
-    </div>
+  	<display:column title="">
+    <div class="btn-group btn-default">
+		<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><i class="glyphicon glyphicon-align-justify" style="margin-top: 1px;"></i></button>
+		<ul class="dropdown-menu">
+			<li><a href="#stdInfo" data-toggle="modal" onClick="getStudentTime('${row.student_no}', '${row.student_name}')">本學期課表</a></li>
+			<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${row.student_no}', '${row.student_name}', '${Oid}')">本課程缺課記錄</a></li>
+			<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${row.student_no}', '${row.student_name}', '')">所有課程缺課記錄</a></li>
+			<li><a href="#stdInfo" data-toggle="modal" onClick="getStdContectInfo('${row.student_no}', '${row.student_name}')">連絡資訊</a></li>
+			<li><a href="#stdInfo" data-toggle="modal" onClick="getStdScoreInfo('${row.student_no}', '${row.student_name}')">歷年成績</a></li>
+			<li><a href="/CIS/Portfolio/ListMyStudents.do" target="_blank">學習歷程檔案</a></li>									
+		</ul>
+	</div>
   	</display:column> 	  	
   	<display:column title="遲到" property="abs5" sortable="true" />  	
   	<display:column title="曠課" property="abs2" sortable="true" />
@@ -76,7 +87,7 @@ $(document).ready(function() {
   	<display:column title="總計" property="total" sortable="true" />
   	
 </display:table>
-	
+</div>
 </form>
 </body>
 </html>

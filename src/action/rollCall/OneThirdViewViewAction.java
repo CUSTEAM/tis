@@ -41,7 +41,7 @@ public class OneThirdViewViewAction extends BaseAction{
 		StringBuilder sb=new StringBuilder("SELECT IFNULL((SELECT COUNT(*)FROM Dilg WHERE student_no=s.student_no AND "
 		+ "Dtime_oid=s.Dtime_oid AND abs IN(SELECT id FROM Dilg_rules WHERE exam='1')),0)as cnt,(d.thour*6)as max,"
 		+ "cs.chi_name, c.ClassName, s.student_no, st.student_name,d.thour FROM stmd st, Seld s, Dtime d, "
-		+ "Csno cs, Class c WHERE d.Oid=s.Dtime_oid AND cs.cscode=d.cscode AND "
+		+ "Csno cs, Class c WHERE d.thour>0 AND d.Oid=s.Dtime_oid AND cs.cscode=d.cscode AND "
 		+ "c.ClassNo=st.depart_class AND st.student_no=s.student_no AND ");
 		
 		if(ClassNo!=null){

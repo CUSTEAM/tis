@@ -1,5 +1,6 @@
 package action;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,8 +18,8 @@ public class ScoreManagerAction extends BaseAction{
 	
 	public String execute(){		
 		String term=(String)getContext().getAttribute("school_term");
-		Map map;
-		boolean b=false;
+
+		
 		//get single teacher list
 		List<Map>myClass=df.sqlGet("SELECT cl.className, cs.chi_name, d.Oid, cs.cscode, cl.classNo, d.Sterm FROM Dtime d, Csno cs, Class cl "+ 
 		"WHERE d.cscode=cs.cscode AND d.depart_class=cl.classNo AND d.Sterm='"+term+"' AND d.techid='"+getSession().getAttribute("userid")+
@@ -39,26 +40,16 @@ public class ScoreManagerAction extends BaseAction{
 			if(myClass.get(i).get("chi_name").toString().indexOf("體育")>=0){
 				myClass.get(i).put("type", "s");
 			}
-			//圖表			
-			map=df.sqlGetMap("SELECT "
-			+ "IFNULL(AVG(s.score2),0)as score2, IFNULL(AVG(s.score3),0)score3,IFNULL(AVG(s.score01),0)as score01,IFNULL(AVG(s.score02),0)as score02,"
-			+ "IFNULL(AVG(s.score03),0)as score03,IFNULL(AVG(s.score04),0)as score04,IFNULL(AVG(s.score05),0)as score05,"
-			+ "IFNULL(AVG(s.score06),0)as score06,IFNULL(AVG(s.score07),0)as score07,IFNULL(AVG(s.score08),0)as score08,"
-			+ "IFNULL(AVG(s.score09),0)as score09,IFNULL(AVG(s.score10),0)as score10 FROM Seld s WHERE s.Dtime_oid="+myClass.get(i).get("Oid"));
 			
-			if(Float.parseFloat(map.get("score01").toString())>0||Float.parseFloat(map.get("score2").toString())>0){
-				b=true;
-			}
-			System.out.println(myClass.get(i).get("Oid")+":"+map);
-			myClass.get(i).putAll(map);
+			
 			
 		}		
+		
 		for(int i=0; i<myClass.size(); i++){
 			myClass.get(i).put("time", df.sqlGet("SELECT * FROM Dtime_class WHERE Dtime_oid="+myClass.get(i).get("Oid")));			
 		}
-		
 		request.setAttribute("myClass", myClass);		
-		request.setAttribute("showChart", b);
+		
 		
 		
 		
@@ -68,8 +59,9 @@ public class ScoreManagerAction extends BaseAction{
 	/**
 	 * get students
 	 * @return
+	 * @throws ParseException 
 	 */
-	public String edit(){
+	public String edit() throws ParseException{
 		//判斷取全班或取分組
 		List stds;
 		if(df.sqlGetInt("SELECT COUNT(*) FROM Dtime_teacher dt, Dtime d WHERE dt.Dtime_oid=d.Oid AND (d.techid='' OR d.techid IS NULL)AND " +
@@ -90,13 +82,13 @@ public class ScoreManagerAction extends BaseAction{
 		
 		//expire date for input percentage of score
 		Date now=new Date();
-		Date edper,stper;
-		try{
-			SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
-			edper=(Date) getContext().getAttribute("date_school_term_begin");				
+		Date edper; //成績比例參考時間
+		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
+		try{			
+			edper=(Date)getContext().getAttribute("date_school_term_begin");				
 			Calendar c=Calendar.getInstance();
 			c.setTime(edper);
-			c.add(Calendar.DAY_OF_YEAR, 14);
+			c.add(Calendar.DAY_OF_YEAR, 14);//開學14天
 			edper=c.getTime();
 			if(now.getTime()>edper.getTime()){
 				request.setAttribute("edper", sf.format(edper));
@@ -115,35 +107,45 @@ public class ScoreManagerAction extends BaseAction{
 			map.put("score2", 30);
 			map.put("score3", 40);
 		}
-		request.setAttribute("seldpro", map);
+		request.setAttribute("seldpro", map);//成績比例
 		
-		//expiry date for input score
-		//expiry mid
 		
-		edper=(Date)getContext().getAttribute("date_exam_mid");
-		if(now.getTime()>edper.getTime()){request.setAttribute("date1", "expiry");}
-		//expiry fin		
-		if(getContext().getAttribute("school_term").equals("2")){
-			//under half
-			if(!df.sqlGetStr("SELECT c.graduate FROM Dtime d, Class c WHERE d.depart_class=c.ClassNo AND d.Oid="+Dtime_oid).equals("0")){
-				//graduating class
-				edper=(Date)getContext().getAttribute("date_exam_grad");
-				if(now.getTime()>edper.getTime()){request.setAttribute("date2", "expiry");}
-			}else{
-				//not graduating class
-				edper=(Date)getContext().getAttribute("date_exam_fin");
-				if(now.getTime()>edper.getTime()){request.setAttribute("date2", "expiry");}
-			}
+		//參考個別設定時間
+		map=df.sqlGetMap("SELECT * FROM ScoreOdDate WHERE DtimeOid="+Dtime_oid);
+		if(map!=null){			
+			edper=sf.parse(map.get("exam_mid").toString());//期中
+			if(now.getTime()>edper.getTime()){request.setAttribute("date1", "expiry");}
+			edper=sf.parse(map.get("exam_fin").toString());//期末
+			if(now.getTime()>edper.getTime()){request.setAttribute("date2", "expiry");}
+			Message msg=new Message();
+			msg.setInfo("本課程的編輯期間由教務單位變更為<br>期中: "+map.get("exam_mid")+"<br>期末: "+map.get("exam_fin"));
+			this.savMessage(msg);
 		}else{
-			//upper half
-			edper=(Date)getContext().getAttribute("date_exam_fin");
-			if(now.getTime()>edper.getTime()){request.setAttribute("date2", getContext().getAttribute("exam_fin"));}
+			//期中
+			edper=(Date)getContext().getAttribute("date_exam_mid");//期中
+			if(now.getTime()>edper.getTime()){request.setAttribute("date1", "expiry");}
+			//期末	
+			if(getContext().getAttribute("school_term").equals("2")){//若為第二學期
+				//畢業班參考畢業考時間
+				if(!df.sqlGetStr("SELECT c.graduate FROM Dtime d, Class c WHERE d.depart_class=c.ClassNo AND d.Oid="+Dtime_oid).equals("0")){
+					edper=(Date)getContext().getAttribute("date_exam_grad");
+					if(now.getTime()>edper.getTime()){request.setAttribute("date2", "expiry");}
+				}else{
+					//非畢業班參考期末時間
+					edper=(Date)getContext().getAttribute("date_exam_fin");
+					if(now.getTime()>edper.getTime()){request.setAttribute("date2", "expiry");}
+				}
+			}else{
+				//非第二學期只參考期末時間
+				edper=(Date)getContext().getAttribute("date_exam_fin");
+				if(now.getTime()>edper.getTime()){request.setAttribute("date2", getContext().getAttribute("exam_fin"));}
+			}
+					
+			if(getContext().getAttribute("school_term").equals("2")){
+				request.setAttribute("sdate3", getContext().getAttribute("exam_grad"));
+			}
+			request.setAttribute("sdate2", getContext().getAttribute("exam_fin"));	
 		}
-				
-		if(getContext().getAttribute("school_term").equals("2")){
-			request.setAttribute("sdate3", getContext().getAttribute("exam_grad"));
-		}
-		request.setAttribute("sdate2", getContext().getAttribute("exam_fin"));	
 		
 		switch(type){
 			case"":return "norRat";
@@ -160,7 +162,7 @@ public class ScoreManagerAction extends BaseAction{
 	score11[],score12[],score13[],score14[],score15[],
 	score16[],score17[],score18[];
 	
-	public String save(){
+	public String save() throws ParseException{
 		Message msg=new Message();
 		Seld seld;
 		for(int i=0; i<seldOid.length; i++){			
@@ -198,8 +200,9 @@ public class ScoreManagerAction extends BaseAction{
 	/**
 	 * save score proportion
 	 * @return
+	 * @throws ParseException 
 	 */
-	public String editPro(){
+	public String editPro() throws ParseException{
 		Message msg=new Message();
 		if(!p1.trim().equals("")&&!p2.trim().equals("")&&!p3.trim().equals("")){
 			if(Integer.parseInt(p1)+Integer.parseInt(p2)+Integer.parseInt(p3)==100){

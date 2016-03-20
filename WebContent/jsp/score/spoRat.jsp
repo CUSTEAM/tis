@@ -7,16 +7,16 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<style>input{ime-mode:disabled;}</style>
 	<script src="/eis/inc/js/develop/stdinfo.js"></script>
+	<script src="/eis/inc/js/develop/timeInfo.js"></script>
+	<script src="/eis/inc/js/advance-form-check-leave.js"></script>
 	<title>體育課程成績輸入</title>
 </head>
 <body>
-<form action="ScoreManager" method="post" class="form-horizontal" >
-<div class="alert" style="position: fixed; width:95%; z-index:20;">
-<b> ${csinfo.ClassName}, ${csinfo.chi_name}</b>,
-輸入完成請先點選 <button type="submit" class="btn btn-small btn-danger" <c:if test="${!empty date2}">disabled</c:if> name="method:save">儲存</button> 確認後再點選 <a class="btn btn-small" href="ScoreManager">離開</a>
-<div rel="popover" title="說明"
-data-content="1.方向鍵  ↑ ↓ 能使游標垂直移動 2.計算功能為輔助,欄位可自由修改3.依各欄位顯示資料為儲存依據"
-data-placement="right" class="elary btn btn-small btn-warning">?</div>
+<form action="ScoreManager" method="post" class="form-inline" >
+<div class="bs-callout bs-callout-warning" id="callout-helper-pull-navbar">
+<h4> ${csinfo.ClassName}, ${csinfo.chi_name}</h4>
+輸入完成請先點選<button type="submit" class="btn btn-xs btn-danger" name="method:save">儲存</button> 確認後再點選 <a class="btn btn-default btn-xs" href="ScoreManager">離開</a>
+1.方向鍵  ↑ ↓ 能使游標垂直移動 2.計算功能為輔助,欄位可自由修改3.依各欄位顯示資料為儲存依據
 </div>
 <br><br><br>
 <input type="hidden" name="Dtime_oid" id="Dtime_oid" value="${Dtime_oid}"/>
@@ -36,75 +36,75 @@ data-placement="right" class="elary btn btn-small btn-warning">?</div>
 	<tr >
 		<td>學號</td>
 		<td>姓名</td>
-		<td>術科成績(50%)</td>
-		<td>平時成績(40%)</td>
-		<td>學科成績(10%)</td>
-		<td>學期成績(100%)</td>
+		<td nowrap>術科成績(50%)</td>
+		<td nowrap>平時成績(40%)</td>
+		<td nowrap>學科成績(10%)</td>
+		<td nowrap width="100%">學期成績(100%)</td>
 	</tr>	
 	</c:if>
 	<tr>
-		<td >
+		<td nowrap>
 		<input type="hidden" name="seldOid" value="${s.Oid}"/>
 		<input type="hidden" value="${s.student_no}" name="studentNo"/>
 		<input type="hidden" value="${s.student_no}" name="${m.dtimeOid}studentNo" />${s.student_no}</td>		
-		<td >${s.student_name}
-		<div class="btn-group">
-			<a class="btn btn-mini dropdown-toggle" data-toggle="dropdown"
-				href="#"><i class="icon-list" style="margin-top: 1px;"></i></a>
+		<td nowrap>${s.student_name}
+		<div class="btn-group btn-default">
+			<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><i class="glyphicon glyphicon-align-justify"></i></button>
 			<ul class="dropdown-menu">
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '${Dtime_oid}')">本課程缺課記錄</a></li>
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '')">所有課程缺課記錄</a></li>
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getStdContectInfo('${s.student_no}', '${s.student_name}')">連絡資訊</a></li>
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getStdScoreInfo('${s.student_no}', '${s.student_name}')">歷年成績</a></li>
-				<li><a href="/CIS/Portfolio/ListMyStudents.do"
-					target="_blank">學習歷程檔案</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getStudentTime('${s.student_no}', '${s.student_name}')">本學期課表</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '${Oid}')">本課程缺課記錄</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '')">所有課程缺課記錄</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getStdContectInfo('${s.student_no}', '${s.student_name}')">連絡資訊</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getStdScoreInfo('${s.student_no}', '${s.student_name}')">歷年成績</a></li>
+				<li><a href="/CIS/Portfolio/ListMyStudents.do" target="_blank">學習歷程檔案</a></li>									
 			</ul>
-		</div></td>
-		<td >
-		<input type="text" name="score1" value="${s.score1}" id="${s.Oid}score1" class="span1"
+		</div>
+		</td>
+		<td>
+		<input type="text" class="form-control" size="2" name="score1" value="${s.score1}" id="${s.Oid}score1" class="span1"
 		onKeyUp="if(ck(this)){ck(this); km(event, '${students[c.index+1].Oid}score1', '${students[c.index-1].Oid}score1'); 
 		sum('${s.Oid}score1', '${s.Oid}score2', '${s.Oid}score3', '${s.Oid}score')}"/>
 		</td>
 		
 		<td >
-		<input type="text" name="score2" value="${s.score2}" id="${s.Oid}score2" class="span1"
+		<input type="text" class="form-control" size="2" name="score2" value="${s.score2}" id="${s.Oid}score2" class="span1"
 		onKeyUp="if(ck(this)){km(event, '${students[c.index+1].Oid}score2', '${students[c.index-1].Oid}score2'); sum('${s.Oid}score1', '${s.Oid}score2', '${s.Oid}score3', '${s.Oid}score')}"/>
 		</td>
 		
 		<td >
-		<input type="text" name="score3" value="${s.score3}" id="${s.Oid}score3" class="span1"
+		<input type="text" class="form-control" size="2" name="score3" value="${s.score3}" id="${s.Oid}score3" class="span1"
 		onKeyUp="if(ck(this)){km(event, '${students[c.index+1].Oid}score3', '${students[c.index-1].Oid}score3'); sum('${s.Oid}score1', '${s.Oid}score2', '${s.Oid}score3', '${s.Oid}score')}"/>
 		</td>
 		
 		<td >
-		<input type="text" name="score" value="${s.score}" id="${s.Oid}score" class="span1"
+		<input type="text" class="form-control" size="2" name="score" value="${s.score}" id="${s.Oid}score" class="span1"
 		onKeyUp="if(ck(this)){km(event, '${students[c.index+1].Oid}score', '${students[c.index-1].Oid}score');}" />
 		</td>
 	</tr>
 	</c:forEach>
 	<tr class="hairLineTdF" align="center">
 		<td class="hairLineTdF" colspan="100">
-		<button type="submit" class="btn btn-danger" <c:if test="${!empty date2}">disabled</c:if> name="method:save">儲存</button>
-		<a class="btn" href="ScoreManager">離開</a>
+		<button type="submit" class="btn btn-danger" name="method:save">儲存</button>
+		<a class="btn btn-default" href="ScoreManager">離開</a>
 		</td>
 	</tr>
 </table>
 </form>
-<div id="stdInfo" class="modal hide fade" tabindex="-1" role="dialog"
-	aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
+<!-- Modal -->
+<div class="modal fade" id="stdInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
 			aria-hidden="true">×</button>
 		<h3 id="stdNameNo"></h3>
-	</div>
-	<div class="modal-body" id="info"></div>
+      </div>
+      <div class="modal-body" id="info"></div>
 	<div class="modal-footer">
-		<button class="btn" data-dismiss="modal" aria-hidden="true">關閉</button>
+		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">關閉</button>
 	</div>
+    </div>
+  </div>
 </div>
 <script>
 $(document).ready(function() {

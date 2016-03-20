@@ -7,34 +7,34 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<style>input{ime-mode:disabled;}</style>
 	<script src="/eis/inc/js/develop/stdinfo.js"></script>
+	<script src="/eis/inc/js/develop/timeInfo.js"></script>
+	<script src="/eis/inc/js/advance-form-check-leave.js"></script>
 	<title>英文課程成績輸入</title>
 </head>
 <body>
-<form action="ScoreManager" method="post" class="form-horizontal" >
-<div class="alert" style="position: fixed; width:96%; z-index:20;">
-<b>${csinfo.ClassName}, ${csinfo.chi_name}</b>,
-輸入完成請先點選 <button type="submit" class="btn btn-danger btn-small" <c:if test="${!empty date2}">disabled</c:if> name="method:save">儲存</button> 確認後再點選 <a class="btn btn-small" href="ScoreManager">離開</a>
-<div rel="popover" title="說明"
-data-content="1.方向鍵  ↑ ↓ 能使游標垂直移動 2.計算功能為輔助,欄位可自由修改3.依各欄位顯示資料為儲存依據"
-data-placement="right" class="elary btn btn-warning btn-small">?</div>
+<form action="ScoreManager" method="post" class="form-inline" >
+<div class="bs-callout bs-callout-warning" id="callout-helper-pull-navbar">
+<h4> ${csinfo.ClassName}, ${csinfo.chi_name}</h4>
+輸入完成請先點選<button type="submit" class="btn btn-xs btn-danger" name="method:save">儲存</button> 確認後再點選 <a class="btn btn-xs btn-default" href="ScoreManager">離開</a>
+1.方向鍵  ↑ ↓ 能使游標垂直移動 2.計算功能為輔助,欄位可自由修改3.依各欄位顯示資料為儲存依據
+<ul>
+<li>平時考共6個欄位, 輸入任一欄立即計算<b>平時成績</b>，佔總成績30%</li>
+<li>補救教學佔<b>平時考平均</b> 30%, 若無補救教學請留空白</li>
+<li>期中考佔總成績 30%, 期末考佔總成績 40%</li>
+<li>英檢成績佔<b>期末成績</b> 50%, 若沒有英檢成績請留空白</li>
+<li>活動欄位會直接影響 總成績</li>
+</ul>
 </div>
-<br><br><br>
-<div class="alert alert-danger">
-平時考共6個欄位, 輸入任一欄立即計算<b>平時成績</b>，佔總成績30%<br>
-補救教學佔<b>平時考平均</b> 30%, 若無補救教學請留空白<br>
-期中考佔總成績 30%, 期末考佔總成績 40%<br>
-英檢成績佔<b>期末成績</b> 50%, 若沒有英檢成績請留空白<br>
-活動欄位會直接影響 總成績
-</div>
+
 
 <input type="hidden" name="Dtime_oid" id="Dtime_oid" value="${Dtime_oid}"/>
 <input type="hidden" name="type" id="type" value="${type}"/>
 
-<table class="table" id="class${e.Oid}">
+<table class="table table-hover" id="class${e.Oid}">
 	<tr>
 		<td>學號</td>
 		<td>姓名</td>
-		<td>平時考</td>
+		<td>平時考 <button type="button" class="btn btn-small btn-success" onClick="$('.next5').show('slow');">其餘3次</button></td>
 		<td>平時</td>
 		<td>補救</td>		
 		<td nowrap>期中考</td>
@@ -50,7 +50,7 @@ data-placement="right" class="elary btn btn-warning btn-small">?</div>
 	<c:if test="${c.index%5==0&&c.index!=0}">	
 	<tr >
 		<td>學號</td><td>姓名</td>
-		<td>平時考</td><td>平時</td>
+		<td>平時考 </td><td>平時</td>
 		<td>補救</td><td>期中考</td>
 		<td>英檢</td><td>期末考</td>
 		<td>活動</td><td>總成績</td>
@@ -59,84 +59,84 @@ data-placement="right" class="elary btn btn-warning btn-small">?</div>
 	<tr>
 		<td id="stImage${s.student_no}" nowrap>${s.student_no}</td>
 		<td id="stImage${s.student_no}" nowrap>${s.student_name}
-		<div class="btn-group">
-			<a class="btn btn-mini dropdown-toggle" data-toggle="dropdown"
-				href="#"><i class="icon-list" style="margin-top: 1px;"></i></a>
+		<div class="btn-group btn-default">
+			<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><i class="glyphicon glyphicon-align-justify"></i></button>
 			<ul class="dropdown-menu">
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '${Dtime_oid}')">本課程缺課記錄</a></li>
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '')">所有課程缺課記錄</a></li>
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getStdContectInfo('${s.student_no}', '${s.student_name}')">連絡資訊</a></li>
-				<li><a href="#stdInfo" data-toggle="modal"
-					onClick="getStdScoreInfo('${s.student_no}', '${s.student_name}')">歷年成績</a></li>
-				<li><a href="/CIS/Portfolio/ListMyStudents.do"
-					target="_blank">學習歷程檔案</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getStudentTime('${s.student_no}', '${s.student_name}')">本學期課表</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '${Oid}')">本課程缺課記錄</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '')">所有課程缺課記錄</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getStdContectInfo('${s.student_no}', '${s.student_name}')">連絡資訊</a></li>
+				<li><a href="#stdInfo" data-toggle="modal" onClick="getStdScoreInfo('${s.student_no}', '${s.student_name}')">歷年成績</a></li>
+				<li><a href="/CIS/Portfolio/ListMyStudents.do" target="_blank">學習歷程檔案</a></li>									
 			</ul>
 		</div></td>
 		<td nowrap>
 		<input type="hidden" name="seldOid" value="${s.Oid}" />
-		<input type="text" name="score01" id="score01${s.Oid}" value="${s.score01}" class="span1" onKeyUp="if(ck(this)){km(event, 'score01${students[c.index+1].Oid}', 'score01${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" name="score02" id="score02${s.Oid}" value="${s.score02}" class="span1" onKeyUp="if(ck(this)){km(event, 'score02${students[c.index+1].Oid}', 'score02${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" name="score03" id="score03${s.Oid}" value="${s.score03}" class="span1" onKeyUp="if(ck(this)){km(event, 'score03${students[c.index+1].Oid}', 'score03${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" name="score04" id="score04${s.Oid}" value="${s.score04}" class="span1" onKeyUp="if(ck(this)){km(event, 'score04${students[c.index+1].Oid}', 'score04${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" name="score05" id="score05${s.Oid}" value="${s.score05}" class="span1" onKeyUp="if(ck(this)){km(event, 'score05${students[c.index+1].Oid}', 'score05${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" name="score06" id="score06${s.Oid}" value="${s.score06}" class="span1" onKeyUp="if(ck(this)){km(event, 'score06${students[c.index+1].Oid}', 'score06${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		
+		<input type="text" name="score01" class="form-control" size="2" id="score01${s.Oid}" value="${s.score01}" class="span1" onKeyUp="if(ck(this)){km(event, 'score01${students[c.index+1].Oid}', 'score01${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" name="score02" class="form-control" size="2" id="score02${s.Oid}" value="${s.score02}" class="span1" onKeyUp="if(ck(this)){km(event, 'score02${students[c.index+1].Oid}', 'score02${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" name="score03" class="form-control" size="2" id="score03${s.Oid}" value="${s.score03}" class="span1" onKeyUp="if(ck(this)){km(event, 'score03${students[c.index+1].Oid}', 'score03${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<span class="next5" style="display:none;">
+		<input type="text" name="score04" class="form-control" size="2" id="score04${s.Oid}" value="${s.score04}" class="span1" onKeyUp="if(ck(this)){km(event, 'score04${students[c.index+1].Oid}', 'score04${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" name="score05" class="form-control" size="2" id="score05${s.Oid}" value="${s.score05}" class="span1" onKeyUp="if(ck(this)){km(event, 'score05${students[c.index+1].Oid}', 'score05${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" name="score06" class="form-control" size="2" id="score06${s.Oid}" value="${s.score06}" class="span1" onKeyUp="if(ck(this)){km(event, 'score06${students[c.index+1].Oid}', 'score06${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		</span>
 		</td>
 		
 		<td  style="font-size:16;" nowrap>
-		<input type="text" name="score1" id="score1${s.Oid}" value="${s.score1}" class="span1" onKeyUp="if(ck(this)){km(event, 'score1${students[c.index+1].Oid}', 'score1${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score1" id="score1${s.Oid}" value="${s.score1}" class="span1" onKeyUp="if(ck(this)){km(event, 'score1${students[c.index+1].Oid}', 'score1${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
 		</td>
 		
 		<td nowrap>
-		<input type="text" name="score08" id="score08${s.Oid}" value="${s.score08}" class="span1" onKeyUp="if(ck(this)){km(event, 'score08${students[c.index+1].Oid}', 'score08${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score08" id="score08${s.Oid}" value="${s.score08}" class="span1" onKeyUp="if(ck(this)){km(event, 'score08${students[c.index+1].Oid}', 'score08${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
 		</td>
 		
 		
 		
 		<td nowrap>
-		<input type="text" name="score2" id="score2${s.Oid}" value="${s.score2}" <c:if test="${date1!=null}">readonly</c:if>  class="span1" <c:if test="${date1==null}">onKeyUp="if(ck(this)){km(event, 'score2${students[c.index+1].Oid}', 'score2${students[c.index-1].Oid}'); countScore('${s.Oid}')}"</c:if> />
+		<input type="text" class="form-control" size="2" name="score2" id="score2${s.Oid}" value="${s.score2}" <c:if test="${date1!=null}">readonly</c:if>  class="span1" <c:if test="${date1==null}">onKeyUp="if(ck(this)){km(event, 'score2${students[c.index+1].Oid}', 'score2${students[c.index-1].Oid}'); countScore('${s.Oid}')}"</c:if> />
 		</td>
 		
 		
 		<td nowrap>
-		<input type="text" name="score16" id="score16${s.Oid}" value="${s.score16}" class="span1" onKeyUp="if(ck(this)){km(event, 'score16${students[c.index+1].Oid}', 'score16${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score16" id="score16${s.Oid}" value="${s.score16}" class="span1" onKeyUp="if(ck(this)){km(event, 'score16${students[c.index+1].Oid}', 'score16${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
 		</td>
 		
 		<td nowrap>
-		<input type="text" name="score3" id="score3${s.Oid}" value="${s.score3}" <c:if test="${date2!=null}">readonly</c:if> class="span1" <c:if test="${date2==null}">onKeyUp="if(ck(this)){km(event, 'score3${students[c.index+1].Oid}', 'score3${students[c.index-1].Oid}'); countScore('${s.Oid}')}"</c:if>/>
+		<input type="text" class="form-control" size="2" name="score3" id="score3${s.Oid}" value="${s.score3}" <c:if test="${date2!=null}">readonly</c:if> class="span1" <c:if test="${date2==null}">onKeyUp="if(ck(this)){km(event, 'score3${students[c.index+1].Oid}', 'score3${students[c.index-1].Oid}'); countScore('${s.Oid}')}"</c:if>/>
 		</td>
 		
 		<td nowrap>
-		<input type="text" name="score09" id="score09${s.Oid}" value="${s.score09}" class="span1" onKeyUp="if(ck(this)){km(event, 'score09${students[c.index+1].Oid}', 'score09${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score09" id="score09${s.Oid}" value="${s.score09}" class="span1" onKeyUp="if(ck(this)){km(event, 'score09${students[c.index+1].Oid}', 'score09${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
 		</td>
 		
 		<td nowrap>
-		<input type="text" name="score" id="score${s.Oid}" value="${s.score}" <c:if test="${date2!=null}">readonly</c:if> class="span1" <c:if test="${date2==null}">onKeyUp="if(ck(this)){km(event, 'score${students[c.index+1].Oid}', 'score${students[c.index-1].Oid}'); countScore('${s.Oid}')}"</c:if>/>
+		<input type="text" class="form-control" size="2" name="score" id="score${s.Oid}" value="${s.score}" <c:if test="${date2!=null}">readonly</c:if> class="span1" <c:if test="${date2==null}">onKeyUp="if(ck(this)){km(event, 'score${students[c.index+1].Oid}', 'score${students[c.index-1].Oid}'); countScore('${s.Oid}')}"</c:if>/>
 		</td>
 	</tr>	
 	</c:forEach>	
 	<tr  align="center">
 		<td  colspan="100">
-		<button type="submit" class="btn btn-danger" <c:if test="${!empty date2}">disabled</c:if> name="method:save">儲存</button>
-		<a class="btn" href="ScoreManager">離開</a>
+		<button type="submit" class="btn btn-danger" name="method:save">儲存</button>
+		<a class="btn btn-default" href="ScoreManager">離開</a>
 		</td>
 	</tr>
 </table>
 </form>
-<div id="stdInfo" class="modal hide fade" tabindex="-1" role="dialog"
-	aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
+<!-- Modal -->
+<div class="modal fade" id="stdInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
 			aria-hidden="true">×</button>
 		<h3 id="stdNameNo"></h3>
-	</div>
-	<div class="modal-body" id="info"></div>
+      </div>
+      <div class="modal-body" id="info"></div>
 	<div class="modal-footer">
-		<button class="btn" data-dismiss="modal" aria-hidden="true">關閉</button>
+		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">關閉</button>
 	</div>
+    </div>
+  </div>
 </div>
 <script>
 $(document).ready(function() {

@@ -17,7 +17,7 @@ public class DilgViewAction extends BaseAction{
 	public String execute() throws Exception {
 		
 		if(request.getParameter("ClassNo")==null){
-			session.put("myClass", df.sqlGet("SELECT ClassNo, ClassName, " +
+			request.setAttribute("myClass", df.sqlGet("SELECT ClassNo, ClassName, " +
 			"(SELECT COUNT(*)FROM stmd WHERE depart_class=Class.ClassNo)as sts, " +
 			"(SELECT COUNT(*)FROM Dilg_apply, stmd WHERE Dilg_apply.student_no=stmd.student_no AND " +
 			"stmd.depart_class=Class.ClassNo AND result IS NOT NULL)as dis, " +
@@ -29,8 +29,8 @@ public class DilgViewAction extends BaseAction{
 			"stmd.depart_class=Class.ClassNo AND abs='2')as uds " +
 			"FROM Class WHERE Type='P' AND tutor='"+getSession().getAttribute("userid")+"'"));
 			return this.SUCCESS;
-		}else{			
-			session.put("myStudents", df.sqlGet("SELECT s.student_no, s.student_name, s.CellPhone, s.telephone, " +
+		}else{	
+			request.setAttribute("myStudents", df.sqlGet("SELECT s.depart_class, s.student_no, s.student_name, s.CellPhone, s.telephone, " +
 			"(SELECT COUNT(*)FROM Dilg WHERE abs='1' AND Dilg.student_no=s.student_no)as abs1," +
 					"(SELECT COUNT(*)FROM Dilg WHERE abs='2' AND Dilg.student_no=s.student_no)as abs2," +
 					"(SELECT COUNT(*)FROM Dilg WHERE abs='3' AND Dilg.student_no=s.student_no)as abs3," +
@@ -50,14 +50,14 @@ public class DilgViewAction extends BaseAction{
 	
 	public String creatSearch(){
 		
-		session.remove("myClass");
+		//session.remove("myClass");
 		
 		return this.SUCCESS;
 	}
 	
 	public String search(){
-		session.put("myClass", this.getData());		
-		return this.SUCCESS;
+		request.setAttribute("myClass", this.getData());		
+		return SUCCESS;
 	}
 	
 	public String scorePrint(){
@@ -773,7 +773,8 @@ public class DilgViewAction extends BaseAction{
 		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
 		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");
 		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
-		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");		
+		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");	
+		
 		return df.sqlGet(sql.toString());
 	}
 	
