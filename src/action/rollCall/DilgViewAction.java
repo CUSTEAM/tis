@@ -412,7 +412,7 @@ public class DilgViewAction extends BaseAction{
 		StringBuilder sql=new StringBuilder("SELECT c.ClassName, "
 				+ "(SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"')as gstmds,");
 		for(int i=1; i<=17; i++){			
-			sql.append("(SELECT COUNT(*)FROM Dilg di, stmd st WHERE di.date>='"+sf.format(begin.getTime())+"'");
+			sql.append("(SELECT COUNT(*)FROM Dilg di, stmd st WHERE (abs!='5'&&abs!='6') AND di.date>='"+sf.format(begin.getTime())+"'");
 			begin.add(Calendar.DAY_OF_YEAR, 7);
 			sql.append("AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo)as cnt"+i+",");
 		}
