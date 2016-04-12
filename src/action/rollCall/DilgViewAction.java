@@ -64,12 +64,20 @@ public class DilgViewAction extends BaseAction{
 		Date date=new Date();
 		List<Map>list;
 		
-		StringBuilder sql=new StringBuilder("SELECT c.DeptNo, c.InstNo, IFNULL(bss.e21,0)as e21, IFNULL(bss.e32,0)as e32, IFNULL(bss.m21,0)as m21, IFNULL(bss.m32,0)as m32,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor,"
+		/*StringBuilder sql=new StringBuilder("SELECT c.DeptNo, c.InstNo, IFNULL(bss.e21,0)as e21, IFNULL(bss.e32,0)as e32, IFNULL(bss.m21,0)as m21, IFNULL(bss.m32,0)as m32,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor,"
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director,(SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"')as gstmd,"
 		+ "(SELECT COUNT(*)FROM stmd, Seld WHERE Seld.status='1' AND Seld.student_no=stmd.student_no AND stmd.depart_class=c.ClassNo)as block,"
 		+ "c.ClassNo, c.ClassName, IFNULL(score.score1,0)as score1, IFNULL(score.score2,0)as score2, IFNULL(score.score,0)as score, IFNULL(score.score2d,0)as score2d, IFNULL(score.scored,0)as scored,"
 		+ "(SELECT COUNT(*) FROM stmd WHERE depart_class=c.ClassNo)as cnt, IFNULL((SELECT COUNT(*) FROM Dilg d, stmd s, Class cl "
 		+ "WHERE (d.abs!='6'AND d.abs!='5') AND d.student_no=s.student_no AND cl.ClassNo=s.depart_class AND cl.ClassNo=c.ClassNo GROUP BY cl.ClassNo),0)"
+		+ "as dilg ");*/
+		
+		StringBuilder sql=new StringBuilder("SELECT c.DeptNo, c.InstNo, IFNULL(bss.e21,0)as e21, IFNULL(bss.e32,0)as e32, IFNULL(bss.m21,0)as m21, IFNULL(bss.m32,0)as m32,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor,"
+		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director,(SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"')as gstmd,"
+		+ "(SELECT COUNT(*)FROM stmd, Seld WHERE Seld.status='1' AND Seld.student_no=stmd.student_no AND stmd.depart_class=c.ClassNo)as block,"
+		+ "c.ClassNo, c.ClassName, IFNULL(score.score1,0)as score1, IFNULL(score.score2,0)as score2, IFNULL(score.score,0)as score, IFNULL(score.score2d,0)as score2d, IFNULL(score.scored,0)as scored,"
+		+ "(SELECT COUNT(*) FROM stmd WHERE depart_class=c.ClassNo)as cnt, IFNULL((SELECT COUNT(*) FROM Dilg d, stmd s, Class cl "
+		+ "WHERE d.abs!='5' AND d.student_no=s.student_no AND cl.ClassNo=s.depart_class AND cl.ClassNo=c.ClassNo GROUP BY cl.ClassNo),0)"
 		+ "as dilg ");
 		
 		sql.append("FROM CODE_DEPT d, (Class c LEFT OUTER JOIN(SELECT cl1.ClassNo, COUNT(CASE WHEN h.score<60 THEN 1 ELSE NULL END)as scored, "
@@ -522,7 +530,8 @@ public class DilgViewAction extends BaseAction{
 		begin.setTime((Date) getContext().getAttribute("date_rollcall_begin"));
 		sql=new StringBuilder("SELECT d.name,");
 		for(int i=1; i<=17; i++){			
-			sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE (abs!='5'&&abs!='6')AND di.date>='"+sf.format(begin.getTime())+"'");
+			//sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE (abs!='5'&&abs!='6')AND di.date>='"+sf.format(begin.getTime())+"'");
+			sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE abs!='5'AND di.date>='"+sf.format(begin.getTime())+"'");
 			begin.add(Calendar.DAY_OF_YEAR, 7);
 			sql.append("AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
 		}
@@ -628,7 +637,8 @@ public class DilgViewAction extends BaseAction{
 			"'AND occur_term='"+getContext().getAttribute("school_term")+"'))as gstmds, SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE "
 			+ "di.date>='"+sf.format(begin.getTime())+"'");
 			begin.add(Calendar.DAY_OF_YEAR, 7);
-			sql.append("AND (di.abs!='6'AND di.abs!='5')AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");			
+			//sql.append("AND (di.abs!='6'AND di.abs!='5')AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
+			sql.append("AND di.abs!='5'AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
 		}
 		sql.append("SUM((SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo))as sts,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor, "
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director, IFNULL((SELECT cname FROM empl WHERE idno=cc.leader),'')as leader FROM Class c, CODE_DEPT d, CODE_COLLEGE cc WHERE "
@@ -746,7 +756,8 @@ public class DilgViewAction extends BaseAction{
 	 */
 	private int getCount(String ClassNo, String DeptNo, String CollegeNo, String begin, String end){
 		
-		StringBuilder sql=new StringBuilder("SELECT COUNT(*) FROM CODE_DEPT cd, Dilg d, stmd s, Class c WHERE (d.abs!='6'AND d.abs!='5') AND "
+		//StringBuilder sql=new StringBuilder("SELECT COUNT(*) FROM CODE_DEPT cd, Dilg d, stmd s, Class c WHERE (d.abs!='6'AND d.abs!='5') AND "
+		StringBuilder sql=new StringBuilder("SELECT COUNT(*) FROM CODE_DEPT cd, Dilg d, stmd s, Class c WHERE d.abs!='5'AND "
 		+ "cd.id=c.DeptNo AND d.student_no=s.student_no AND s.depart_class=c.ClassNo AND d.date>='"+begin+"' AND d.date<='"+end+"'");
 		//if(!cno.equals(""))sql.append("AND c.Campus='"+cno+"'");
 		if(ClassNo!=null)sql.append("AND c.ClassNo='"+ClassNo+"'");

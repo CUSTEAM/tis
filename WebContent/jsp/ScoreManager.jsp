@@ -85,7 +85,7 @@
 	  	</c:forEach>
 		</td>
 		<td nowrap>					
-		</select>	
+		
 		<select id="type${m.Oid}" class="selectpicker upInput">
 		  <optgroup label="提供標準成績計算欄位">
 		    <option <c:if test="${m.type==''}">selected</c:if> value="">一般格式</option>		    
