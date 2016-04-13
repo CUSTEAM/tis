@@ -46,6 +46,12 @@
 			<result>/jsp/OneThirdViewView.jsp</result>
 			<result name="creatSearch">/jsp/OneThirdViewView.jsp</result>
 		</action>
+		
+		<action name="DilgImpDateManager" class="action.imp.DilgImpDateManagerAction">
+			<result>/jsp/imp/DilgImpDateManager.jsp</result>
+			<result name="edit">/jsp/imp/DilgImpDateEdit.jsp</result>
+		</action>
+		
 	</package>	 
 	
 	<package name="language" extends="abstract_struts" namespace="/">		
