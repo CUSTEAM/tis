@@ -24,15 +24,14 @@ $(document).ready(function() {
 <strong>重大集會日期設定</strong>
 </div>
 
-<form action="DilgImpDateManager" method="post">
+<form action="DilgImpDateManager" method="post" class="form-inline">
 <div class="panel panel-primary">
   
 	<div class="panel-heading">建立新集會</div>
   	
 	<table class="table">
 		<tr>
-			<td>
-			
+			<td>			
 			<div class="input-group">
 			  <span class="input-group-addon">集會日期</span>
 			  <input type="text" class="form-control" id="date" name="date">
@@ -42,13 +41,23 @@ $(document).ready(function() {
 		<tr>
 			<td>
 			<div class="input-group">
-			  <span class="input-group-addon" >集會名稱</span>
-			  <input type="text" class="form-control" name="name">
+			  <span class="input-group-addon">開始時間</span>
+			  <input type="text" class="form-control" id="begin" name="begin">
 			</div>
+			
+			<div class="input-group">
+			  <span class="input-group-addon">結束時間</span>
+			  <input type="text" class="form-control" id="end" name="end">
+			</div>
+			
 			</td>
 		</tr>
 		<tr>
 			<td>
+			<div class="input-group">
+			  <span class="input-group-addon" >集會名稱</span>
+			  <input type="text" class="form-control" name="name"  />
+			</div>
 			<div class="input-group">
 			  <span class="input-group-addon">點名次數</span>
 			  <select class="form-control" name="cls">
@@ -60,8 +69,9 @@ $(document).ready(function() {
 			  	<option value="6">6</option>
 			  </select>
 			</div>
-			</td>			
+			</td>
 		</tr>
+		
 		<tr>
 			<td>
 			<button class="form-control btn btn-primary" name="method:create">建立集會</button>
@@ -77,22 +87,29 @@ $(document).ready(function() {
 	<div class="panel-heading">集會列表</div>
   	
 	<table class="table">
+		<thead>
 		<tr>
-			<td>集會名稱</td>
-			<td>集會日期</td>
-			<td>點名次數</td>
-			<td>建立者</td>
-			<td>
+			<th nowrap>集會名稱</th>
+			<th nowrap>集會日期</th>
+			<th nowrap>時間</th>
+			<th nowrap>點名次數</th>
+			<th nowrap>班級數</th>
+			<th nowrap>建立者</th>
+			<th nowrap>
 			<input type="hidden" id="Oid" name="Oid"/>
-			</td>
+			</th>
 		</tr>
+		</thead>
+		<tbody>
 		<c:forEach items="${alldate}" var="d">
 		<tr>
-			<td>${d.name}</td>
-			<td>${d.date}</td>
+			<td nowrap>${d.name}</td>
+			<td nowrap>${d.date}</td>
+			<td nowrap>${d.begin}~${d.end}</td>
 			<td>${d.cls}</td>
-			<td>${d.cname}</td>
-			<td>
+			<td nowrap>${d.cnt}</td>
+			<td nowrap>${d.cname}</td>
+			<td width="100%">
 			<div class="btn-group" role="group" aria-label="...">
 			<button class="btn btn-default btn-sm" onClick="$('#Oid').val('${d.Oid}')" name="method:edit">設定班級範圍</button>
 			<button class="btn btn-default btn-sm" onClick="$('#Oid').val('${d.Oid}')" name="method:printStat">列印點名狀況</button>
@@ -102,12 +119,15 @@ $(document).ready(function() {
 			</td>
 		</tr>
 		</c:forEach>
+		</tbody>
 	</table>
 	</div>
 	</c:if>
 </form>
 <script>
 $("#date").datepicker();
+$("#begin").timepicker();
+$("#end").timepicker();
 </script>
 </body>
 </html>

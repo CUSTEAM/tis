@@ -21,6 +21,7 @@
 		<action name="RollCall" class="action.rollCall.RollCallAction">
 			<result name="intro">/jsp/RollCall.jsp</result>
 			<result name="rollCall">/jsp/RollCall/call.jsp</result>
+			<result name="impCall">/jsp/RollCall/impCall.jsp</result>
 			<result name="rollView">/jsp/RollCall/view.jsp</result>
 			<result name="success" type="redirect">RollCall</result>
 		</action>
@@ -51,6 +52,12 @@
 			<result>/jsp/imp/DilgImpDateManager.jsp</result>
 			<result name="edit">/jsp/imp/DilgImpDateEdit.jsp</result>
 		</action>
+		
+		<action name="DilgImpRollCall" class="action.imp.DilgImpRollCallAction">
+			<result>/jsp/imp/DilgImpRollCall.jsp</result>
+		</action>
+		
+		
 		
 	</package>	 
 	

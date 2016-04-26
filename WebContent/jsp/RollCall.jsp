@@ -65,6 +65,10 @@ $(document).ready(function() {
 	<input type="hidden" name="date" id="date"/>
 	<input type="hidden" name="week" id="week"/>
 	
+	
+	<input type="hidden" id="impOid" name="impOid" />
+	<input type="hidden" id="impClass" name="impClass" />
+	
 	<div class="panel panel-primary">
 	<div class="panel-heading">點名狀況</div>
   	<div class="panel-body">
@@ -97,28 +101,79 @@ $(document).ready(function() {
 			</tr>
 		</c:if>
 		<c:forEach items="${weeks}" var="w">
+			
+			
+			
+			
+			<c:if test="${!empty w.week}">
+				
+				<c:if test="${empty w.Oid}">
+				<tr>
+					<td nowrap>${w.date}</td>
+					<td ></td>
+					<td nowrap></td>
+					<td nowrap>${w.ClassName}</td>
+					<td>${w.chi_name}</td>
+					<td>	
+					<div class="btn-group" role="group" aria-label="...">			
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" id="ActLink" name="method:callOne" value="點名" class="btn btn-default"/>
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')"id="ActLink" name="method:callAll" value="到齊" class="btn btn-success"/>
+					</div>
+					</td>
+					<td>
+					<c:if test="${!w.log}"><span class="label label-important">尚未編輯..</span></c:if> 
+					<c:if test="${w.log && empty w.info}"><span class="label label-success">全班到齊!</span></c:if> 
+					<c:if test="${w.log &&!empty w.info}">
+					<c:forEach items="${w.info}" var="f">
+						<span class="label label-primary">第${f.cls}節${f.cnt}/${w.select}</span>
+					</c:forEach>
+					</c:if>
+					</td>
+				</tr>				
+				</c:if>
+			
+			
+				<c:if test="${!empty w.Oid}">
+				<tr>
+					<td nowrap>${w.date}</td>
+					<td >${w.week}</td>
+					<td nowrap>${w.begin}至${w.end}節</td>
+					<td nowrap>${w.ClassName}</td>
+					<td>${w.chi_name}</td>
+					<td>	
+					<div class="btn-group" role="group" aria-label="...">			
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" id="ActLink" name="method:callOne" value="點名" class="btn btn-default"/>
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')"id="ActLink" name="method:callAll" value="到齊" class="btn btn-success"/>
+					</div>
+					</td>
+					<td>
+					<c:if test="${!w.log}"><span class="label label-important">尚未編輯..</span></c:if> 
+					<c:if test="${w.log && empty w.info}"><span class="label label-success">全班到齊!</span></c:if> 
+					<c:if test="${w.log &&!empty w.info}">
+					<c:forEach items="${w.info}" var="f">
+						<span class="label label-primary">第${f.cls}節${f.cnt}/${w.select}</span>
+					</c:forEach>
+					</c:if>
+					</td>
+				</tr>
+				</c:if>
+			</c:if>
+			<c:if test="${empty w.week}">
 			<tr>
 				<td nowrap>${w.date}</td>
-				<td >${w.week}</td>
-				<td nowrap>${w.begin}至${w.end}節</td>
+				<td ></td>
+				<td nowrap></td>
 				<td nowrap>${w.ClassName}</td>
 				<td>${w.chi_name}</td>
 				<td>	
-				<div class="btn-group" role="group" aria-label="...">			
-				<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" id="ActLink" name="method:callOne" value="點名" class="btn btn-default"/>
-				<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')"id="ActLink" name="method:callAll" value="到齊" class="btn btn-success"/>
-				</div>
+				<button name="method:impCall" onClick="$('#impOid').val('${w.Oid}'),$('#impClass').val('${w.ClassNo}')" class="btn btn-warning">重大集會點名</button>
 				</td>
 				<td>
-				<c:if test="${!w.log}"><span class="label label-important">尚未編輯..</span></c:if> 
-				<c:if test="${w.log && empty w.info}"><span class="label label-success">全班到齊!</span></c:if> 
-				<c:if test="${w.log &&!empty w.info}">
-				<c:forEach items="${w.info}" var="f">
-					<span class="label label-primary">第${f.cls}節${f.cnt}/${w.select}</span>
-				</c:forEach>
-				</c:if>
+				<c:if test="${!empty w.edit}"><span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span> ${w.edit}</c:if>
+				
 				</td>
 			</tr>
+			</c:if>
 		</c:forEach>
 		<c:forEach items="${oldweeks}" var="w">
 			<tr>

@@ -40,19 +40,41 @@ public class RollCallAction extends BaseAction{
 		"d.Sterm='"+getContext().getAttribute("school_term")+"' AND dt.teach_id='"+getSession().getAttribute("userid")+"'"));
 		
 		//目前8天
-		request.setAttribute("weeks", bm.sortListByKey(getCallInfo(rollcall_begin, rollcall_end, list, 8), "sdate", true));
+		List<Map>callInfo=getCallInfo(rollcall_begin, rollcall_end, list, 8);
+		//重大集會
+		List<Map>tmp=df.sqlGet("SELECT did.Oid, c.ClassNo, c.ClassName, did.name as chi_name,did.date,dic.edit FROM "
+		+ "Dilg_imp_date did, Dilg_imp_class dic, Class c WHERE c.ClassNo=dic.ClassNo AND dic.Dilg_imp_date_oid=did.Oid AND "
+		+ "c.tutor='"+getSession().getAttribute("userid")+"'AND did.date>='"+sf.format(c.getTime())+"' AND did.date<='"+sf.format(new Date())+"'");
+		callInfo=bm.sortListByKey(callInfo, "sdate", true);
+		tmp.addAll(callInfo);		
+		request.setAttribute("weeks", tmp);
 		//8天前的130天只可讀
 		if(session.get("oldweeks")==null){
 			getSession().setAttribute("myCs", 
 			df.sqlGet("SELECT d.Oid, cs.chi_name, c.ClassName FROM Dtime d, Csno cs, Class c WHERE " +
 			"d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND d.techid='"+getSession().getAttribute("userid")+"' AND d.Sterm='"+getContext().getAttribute("school_term")+"'"));
 			getSession().setAttribute("oldweeks", bm.sortListByKey(getCallInfo(rollcall_begin, rollcall_end, list, 130), "sdate", true));
-		}
-		
+		}		
 		//圖表
 		request.setAttribute("chart", sam.Dilg_pro_techid((String) getSession().getAttribute("userid"), rollcall_begin, getContext().getAttribute("school_term").toString()));
 		return "intro";
+	}	
+	
+	/**
+	 * 重大集會點名
+	 * @return
+	 */
+	public String impCall(){
+		SimpleDateFormat sf1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
+		df.exSql("UPDATE Dilg_imp_class SET edit='"+sf1.format(new Date())+"'WHERE ClassNo='"+impClass+"'AND Dilg_imp_date_oid="+impOid);
+		List<Map>list=df.sqlGet("SELECT s.student_no, s.student_name, di.cls FROM stmd s LEFT "
+		+ "OUTER JOIN Dilg_imp di ON s.student_no=di.student_no AND di.Dilg_imp_date_oid='"+impOid+"'"
+		+ "WHERE s.depart_class='"+impClass+"'");		
+		request.setAttribute("info", df.sqlGetMap("SELECT * FROM Dilg_imp_date WHERE Oid="+impOid));
+		request.setAttribute("students", list);
+		return "impCall";
 	}
+	
 	
 	/**
 	 * 依日期節次塞資訊
@@ -290,4 +312,8 @@ public class RollCallAction extends BaseAction{
 	public String Oid;	
 	public String date;
 	public String week;
+	
+	public String impOid;
+	public String impClass;
+	public String cls;
 }
