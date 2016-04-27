@@ -69,7 +69,7 @@ public class RollCallAction extends BaseAction{
 		df.exSql("UPDATE Dilg_imp_class SET edit='"+sf1.format(new Date())+"'WHERE ClassNo='"+impClass+"'AND Dilg_imp_date_oid="+impOid);
 		List<Map>list=df.sqlGet("SELECT s.student_no, s.student_name, di.cls FROM stmd s LEFT "
 		+ "OUTER JOIN Dilg_imp di ON s.student_no=di.student_no AND di.Dilg_imp_date_oid='"+impOid+"'"
-		+ "WHERE s.depart_class='"+impClass+"'");		
+		+ "WHERE s.depart_class='"+impClass+"'ORDER BY s.student_no");		
 		request.setAttribute("info", df.sqlGetMap("SELECT * FROM Dilg_imp_date WHERE Oid="+impOid));
 		request.setAttribute("students", list);
 		return "impCall";

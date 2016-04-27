@@ -53,10 +53,6 @@
 			<result name="edit">/jsp/imp/DilgImpDateEdit.jsp</result>
 		</action>
 		
-		<action name="DilgImpRollCall" class="action.imp.DilgImpRollCallAction">
-			<result>/jsp/imp/DilgImpRollCall.jsp</result>
-		</action>
-		
 		
 		
 	</package>	 
