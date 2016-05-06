@@ -29,11 +29,11 @@
 		<td><div class="input-group"><input type="text" size="2" class="form-control" id="p2" name="p2" class="span1 editPro" <c:if test="${!empty edper}">readonly</c:if> value="${seldpro.score2}"/><span class="input-group-addon" id="basic-addon2">%</span></div></td>
 		<td><div class="input-group"><input type="text" size="2" class="form-control" id="p3" name="p3" class="span1 editPro" <c:if test="${!empty edper}">readonly</c:if> value="${seldpro.score3}"/><span class="input-group-addon" id="basic-addon2">%</span></div>	
 		</td>
-		<td>
+		<td nowrap>
 		<c:if test="${empty edper}">		
 		<button type="submit" id="editPro" class="btn btn-success" name="method:editPro">儲存</button>
 		</c:if>
-		<c:if test="${!empty edper}"><p class="text-error"><small>${edper}<br>截止變更比例</small></p></c:if>
+		<c:if test="${!empty edper}"><small>${fn:substring(edper, 0, 10)}<br>截止變更</small></c:if>
 		</td>
 	</tr>
 	<tr>
@@ -74,23 +74,23 @@
 		</td>
 		<td nowrap>
 		<input type="hidden" name="seldOid" value="${s.Oid}" />		
-		<input type="text" class="form-control" size="2" name="score01"  id="score01${s.Oid}" value="${s.score01}" class="span1" onKeyUp="if(ck(this)){ck(this); km(event, 'score01${students[c.index+1].Oid}', 'score01${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score02"  id="score02${s.Oid}" value="${s.score02}" class="span1" onKeyUp="if(ck(this)){km(event, 'score02${students[c.index+1].Oid}', 'score02${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score03"  id="score03${s.Oid}" value="${s.score03}" class="span1" onKeyUp="if(ck(this)){km(event, 'score03${students[c.index+1].Oid}', 'score03${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score04"  id="score04${s.Oid}" value="${s.score04}" class="span1" onKeyUp="if(ck(this)){km(event, 'score04${students[c.index+1].Oid}', 'score04${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score05"  id="score05${s.Oid}" value="${s.score05}" class="span1" onKeyUp="if(ck(this)){km(event, 'score05${students[c.index+1].Oid}', 'score05${students[c.index-1].Oid}');countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score01"  id="score01${s.Oid}" value="${s.score01}" onKeyUp="if(ck(this)){ck(this); km(event, 'score01${students[c.index+1].Oid}', 'score01${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score02"  id="score02${s.Oid}" value="${s.score02}" onKeyUp="if(ck(this)){km(event, 'score02${students[c.index+1].Oid}', 'score02${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score03"  id="score03${s.Oid}" value="${s.score03}" onKeyUp="if(ck(this)){km(event, 'score03${students[c.index+1].Oid}', 'score03${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score04"  id="score04${s.Oid}" value="${s.score04}" onKeyUp="if(ck(this)){km(event, 'score04${students[c.index+1].Oid}', 'score04${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score05"  id="score05${s.Oid}" value="${s.score05}" onKeyUp="if(ck(this)){km(event, 'score05${students[c.index+1].Oid}', 'score05${students[c.index-1].Oid}');countScore('${s.Oid}')}"/>
 		<span class="next5">
-		<input type="text" class="form-control" size="2" class="form-control" name="score06"  id="score06${s.Oid}" value="${s.score06}" class="span1" onKeyUp="if(ck(this)){km(event, 'score06${students[c.index+1].Oid}', 'score06${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score07"  id="score07${s.Oid}" value="${s.score07}" class="span1" onKeyUp="if(ck(this)){km(event, 'score07${students[c.index+1].Oid}', 'score07${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score08"  id="score08${s.Oid}" value="${s.score08}" class="span1" onKeyUp="if(ck(this)){km(event, 'score08${students[c.index+1].Oid}', 'score08${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score09"  id="score09${s.Oid}" value="${s.score09}" class="span1" onKeyUp="if(ck(this)){km(event, 'score09${students[c.index+1].Oid}', 'score09${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
-		<input type="text" class="form-control" size="2" name="score10"  id="score10${s.Oid}" value="${s.score10}" class="span1" onKeyUp="if(ck(this)){km(event, 'score10${students[c.index+1].Oid}', 'score10${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" class="form-control" name="score06"  id="score06${s.Oid}" value="${s.score06}" onKeyUp="if(ck(this)){km(event, 'score06${students[c.index+1].Oid}', 'score06${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score07"  id="score07${s.Oid}" value="${s.score07}" onKeyUp="if(ck(this)){km(event, 'score07${students[c.index+1].Oid}', 'score07${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score08"  id="score08${s.Oid}" value="${s.score08}" onKeyUp="if(ck(this)){km(event, 'score08${students[c.index+1].Oid}', 'score08${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score09"  id="score09${s.Oid}" value="${s.score09}" onKeyUp="if(ck(this)){km(event, 'score09${students[c.index+1].Oid}', 'score09${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
+		<input type="text" class="form-control" size="2" name="score10"  id="score10${s.Oid}" value="${s.score10}" onKeyUp="if(ck(this)){km(event, 'score10${students[c.index+1].Oid}', 'score10${students[c.index-1].Oid}'); countScore('${s.Oid}')}"/>
 		</span>
 		</td>		
-		<td><input type="text" class="form-control" size="2" name="score1"  id="score1${s.Oid}" value="${s.score1}" class="span1" onKeyUp="km(event, 'score1${students[c.index+1].Oid}', 'score1${students[c.index-1].Oid}'); if(ck(this)){finScore('${s.Oid}');}"/></td>
-		<td><input type="text" class="form-control" size="2" name="score2" <c:if test="${!empty date1}">readonly</c:if> id="score2${s.Oid}" value="${s.score2}" class="span1"  <c:if test="${date1==null}"> onKeyUp="km(event, 'score2${students[c.index+1].Oid}', 'score2${students[c.index-1].Oid}'); if(ck(this)){finScore('${s.Oid}');}"</c:if>/></td>		
-		<td><input type="text" class="form-control" size="2" name="score3"  <c:if test="${!empty date2}">readonly</c:if> id="score3${s.Oid}" value="${s.score3}" class="span1"  <c:if test="${date2==null}"> onKeyUp="km(event, 'score3${students[c.index+1].Oid}', 'score3${students[c.index-1].Oid}'); if(ck(this)){finScore('${s.Oid}');}"</c:if>/></td>		
-		<td><input type="text" class="form-control" size="2" name="score"  <c:if test="${!empty date2}">readonly</c:if> id="score${s.Oid}" value="${s.score}" class="span1"  <c:if test="${date2==null}"> onKeyUp="ck(this),km(event, 'score${students[c.index+1].Oid}', 'score${students[c.index-1].Oid}');"</c:if> /></td>
+		<td><input type="text" class="form-control" size="2" name="score1"  id="score1${s.Oid}" value="${s.score1}" onKeyUp="km(event, 'score1${students[c.index+1].Oid}', 'score1${students[c.index-1].Oid}'); if(ck(this)){finScore('${s.Oid}');}"/></td>
+		<td><input type="text" class="form-control" size="2" name="score2" <c:if test="${!empty date1}">readonly</c:if> id="score2${s.Oid}" value="${s.score2}"  <c:if test="${date1==null}"> onKeyUp="km(event, 'score2${students[c.index+1].Oid}', 'score2${students[c.index-1].Oid}'); if(ck(this)){finScore('${s.Oid}');}"</c:if>/></td>		
+		<td><input type="text" class="form-control" size="2" name="score3"  <c:if test="${!empty date2}">readonly</c:if> id="score3${s.Oid}" value="${s.score3}"  <c:if test="${date2==null}"> onKeyUp="km(event, 'score3${students[c.index+1].Oid}', 'score3${students[c.index-1].Oid}'); if(ck(this)){finScore('${s.Oid}');}"</c:if>/></td>		
+		<td><input type="text" class="form-control" size="2" name="score"  <c:if test="${!empty date2}">readonly</c:if> id="score${s.Oid}" value="${s.score}"  <c:if test="${date2==null}"> onKeyUp="ck(this),km(event, 'score${students[c.index+1].Oid}', 'score${students[c.index-1].Oid}');"</c:if> /></td>
 	</tr>	
 	</c:forEach>	
 	<tr>

@@ -53,8 +53,6 @@
 			<result name="edit">/jsp/imp/DilgImpDateEdit.jsp</result>
 		</action>
 		
-		
-		
 	</package>	 
 	
 	<package name="language" extends="abstract_struts" namespace="/">		

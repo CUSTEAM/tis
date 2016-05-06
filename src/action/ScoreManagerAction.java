@@ -17,9 +17,7 @@ public class ScoreManagerAction extends BaseAction{
 	public String Dtime_oid,type,p1,p2,p3;
 	
 	public String execute(){		
-		String term=(String)getContext().getAttribute("school_term");
-
-		
+		String term=(String)getContext().getAttribute("school_term");		
 		//get single teacher list
 		List<Map>myClass=df.sqlGet("SELECT cl.className, cs.chi_name, d.Oid, cs.cscode, cl.classNo, d.Sterm FROM Dtime d, Csno cs, Class cl "+ 
 		"WHERE d.cscode=cs.cscode AND d.depart_class=cl.classNo AND d.Sterm='"+term+"' AND d.techid='"+getSession().getAttribute("userid")+
@@ -39,19 +37,13 @@ public class ScoreManagerAction extends BaseAction{
 			}
 			if(myClass.get(i).get("chi_name").toString().indexOf("體育")>=0){
 				myClass.get(i).put("type", "s");
-			}
-			
-			
-			
+			}			
 		}		
 		
 		for(int i=0; i<myClass.size(); i++){
 			myClass.get(i).put("time", df.sqlGet("SELECT * FROM Dtime_class WHERE Dtime_oid="+myClass.get(i).get("Oid")));			
 		}
-		request.setAttribute("myClass", myClass);		
-		
-		
-		
+		request.setAttribute("myClass", myClass);			
 		
 		return SUCCESS;
 	}
@@ -83,7 +75,7 @@ public class ScoreManagerAction extends BaseAction{
 		//expire date for input percentage of score
 		Date now=new Date();
 		Date edper; //成績比例參考時間
-		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		try{			
 			edper=(Date)getContext().getAttribute("date_school_term_begin");				
 			Calendar c=Calendar.getInstance();
@@ -108,7 +100,6 @@ public class ScoreManagerAction extends BaseAction{
 			map.put("score3", 40);
 		}
 		request.setAttribute("seldpro", map);//成績比例
-		
 		
 		//參考個別設定時間
 		map=df.sqlGetMap("SELECT * FROM ScoreOdDate WHERE DtimeOid="+Dtime_oid);
