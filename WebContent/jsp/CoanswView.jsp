@@ -83,7 +83,7 @@ function drawChart() {
 
 </div>
 
-<div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+<!--div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
 	<div class="panel panel-primary">
 		<div class="panel-heading" role="tab" id="headingOne">
 			<a data-toggle="collapse" style="color:#ffffff;" data-parent="#accordion2" href="#coll">點選檢視歷年資料</a>
@@ -120,7 +120,7 @@ function drawChart() {
 			</div>
 		</div>
 	</div>	
-</div>
+</div-->
 
 <div class="row">
 <div class="col-xs-12 col-md-4">

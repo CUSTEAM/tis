@@ -60,7 +60,7 @@ public class CoanswViewAction extends BaseAction{
 		
 		
 		//歷年
-		List<Map>years=df.sqlGet("SELECT d.school_year FROM Savedtime d WHERE "
+		/*List<Map>years=df.sqlGet("SELECT d.school_year FROM Savedtime d WHERE "
 				+ "d.techid='"+getSession().getAttribute("userid")+"' GROUP BY d.school_year ORDER BY d.school_year DESC");
 		
 		List<Map>savdtime;
@@ -80,7 +80,7 @@ public class CoanswViewAction extends BaseAction{
 			
 			
 		}
-		request.setAttribute("years", years);
+		request.setAttribute("years", years);*/
 		
 		return SUCCESS;
 	}
