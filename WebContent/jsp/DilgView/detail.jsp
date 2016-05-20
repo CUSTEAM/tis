@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 <script src="/eis/inc/js/develop/stdinfo.js"></script>
 <script src="/eis/inc/js/develop/timeInfo.js"></script>
+<script src="/eis/inc/js/plugin/jquery.tinyMap.min.js"></script>
 <script>  
 $(document).ready(function() {
 	
@@ -36,6 +37,7 @@ $(document).ready(function() {
 		<h3 id="stdNameNo"></h3>
       </div>
       <div class="modal-body" id="info"></div>
+      <center><div class="modal-body" style="width:80%; height:400px;" id="stdMap"></div></center>
 	<div class="modal-footer">
 		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">關閉</button>
 	</div>
@@ -64,7 +66,7 @@ $(document).ready(function() {
   	<display:column title="姓名" property="student_name" sortable="true"/> 
   	<display:column title="">
     <div class="btn-group btn-default">
-		<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><i class="glyphicon glyphicon-align-justify" style="margin-top: 1px;"></i></button>
+		<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><i class="glyphicon glyphicon-align-justify" style="margin-top: 1px;"></i> 學生資訊</button>
 		<ul class="dropdown-menu">
 			<li><a href="#stdInfo" data-toggle="modal" onClick="getStudentTime('${row.student_no}', '${row.student_name}')">本學期課表</a></li>
 			<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${row.student_no}', '${row.student_name}', '${Oid}')">本課程缺課記錄</a></li>

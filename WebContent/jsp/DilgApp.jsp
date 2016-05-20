@@ -14,6 +14,7 @@
 <title>假單審核</title>
 <script src="/eis/inc/js/develop/stdinfo.js"></script>
 <script src="/eis/inc/js/develop/timeInfo.js"></script>
+<script src="/eis/inc/js/plugin/jquery.tinyMap.min.js"></script>
 <script>  
 $(document).ready(function() {
 	$("input[id='nameno']").typeahead({
@@ -111,6 +112,7 @@ function showApp(filename){
 		<h3 id="stdNameNo"></h3>
       </div>
       <div class="modal-body" id="info"></div>
+      <center><div class="modal-body" style="width:80%; height:400px;" id="stdMap"></div></center>
 	<div class="modal-footer">
 		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">關閉</button>
 	</div>
