@@ -83,13 +83,20 @@ function drawChart() {
 
 </div>
 
-<!--div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+<div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
 	<div class="panel panel-primary">
 		<div class="panel-heading" role="tab" id="headingOne">
 			<a data-toggle="collapse" style="color:#ffffff;" data-parent="#accordion2" href="#coll">點選檢視歷年資料</a>
 		</div>
+		
 		<div id="coll" class="accordion-body collapse in">
-			<div class="accordion-inner">			
+			<div class="accordion-inner">
+			
+			<div class="panel-body">
+		    	<p><span class="label label-as-badge label-danger">1</span> 統計過程僅採用有效問卷</p>
+		    	<p><span class="label label-as-badge label-warning">2</span> 原始值以0為基準建立統計</p>
+		    	<p><span class="label label-as-badge label-warning">3</span> 加權值以50為基準建立統計</p>
+			</div>			
 			<table class="table">
 			<tr>
 				<td>學年</td>
@@ -99,7 +106,8 @@ function drawChart() {
 				<td>選課人數</td>
 				<td>樣本數</td>
 				<td>有效樣本數</td>
-				<td>平均值</td>
+				<td>原始值</td>
+				<td>加權值</td>
 			</tr>
 			<c:forEach items="${years}" var="y">
 			
@@ -112,6 +120,7 @@ function drawChart() {
 				<td>${c.stu_select}</td>
 				<td>${c.samples}</td>
 				<td>${c.effsamples}</td>
+				<td>${c.avg0}</td>
 				<td>${c.avg}</td>
 			</tr>
 			</c:forEach>
@@ -120,7 +129,7 @@ function drawChart() {
 			</div>
 		</div>
 	</div>	
-</div-->
+</div>
 
 <div class="row">
 <div class="col-xs-12 col-md-4">

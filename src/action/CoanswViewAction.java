@@ -60,13 +60,13 @@ public class CoanswViewAction extends BaseAction{
 		
 		
 		//歷年
-		/*List<Map>years=df.sqlGet("SELECT d.school_year FROM Savedtime d WHERE "
+		List<Map>years=df.sqlGet("SELECT d.school_year FROM Savedtime d WHERE "
 				+ "d.techid='"+getSession().getAttribute("userid")+"' GROUP BY d.school_year ORDER BY d.school_year DESC");
 		
 		List<Map>savdtime;
 		for(int i=0; i<years.size(); i++){
 			savdtime=df.sqlGet(
-					"SELECT d.school_term, c.ClassName, cs.chi_name, d.samples, d.effsamples, d.avg, d.stu_select " +
+					"SELECT d.school_term, c.ClassName, cs.chi_name, d.samples, d.effsamples, d.avg,d.avg0, d.stu_select " +
 					"FROM Savedtime d, Class c, Csno cs WHERE d.depart_class=c.ClassNo AND " +
 					"d.cscode=cs.cscode AND d.techid='"+getSession().getAttribute("userid")+"'AND " +
 					"d.school_year='"+years.get(i).get("school_year")+"' ORDER BY d.school_term");
@@ -80,7 +80,7 @@ public class CoanswViewAction extends BaseAction{
 			
 			
 		}
-		request.setAttribute("years", years);*/
+		request.setAttribute("years", years);
 		
 		return SUCCESS;
 	}
