@@ -16,7 +16,7 @@
 <form action="ScoreManager" method="post" class="form-inline">
 <div class="bs-callout bs-callout-warning" id="callout-helper-pull-navbar">
 <h4> ${csinfo.ClassName}, ${csinfo.chi_name}</h4>
-輸入完成請先點選<button type="submit" class="btn btn-xs btn-danger" name="method:save">儲存</button> 確認後再點選 <a class="btn btn-default btn-xs" href="ScoreManager">離開</a>
+輸入完成請先點選<button type="submit" class="btn btn-xs btn-danger save" name="method:save">儲存</button> 確認後再點選 <a class="btn btn-default btn-xs" href="ScoreManager">離開</a>
 1.方向鍵  ↑ ↓ 能使游標垂直移動 2.計算功能為輔助,欄位可自由修改3.依各欄位顯示資料為儲存依據
 </div>
 <input type="hidden" name="Dtime_oid" id="Dtime_oid" value="${Dtime_oid}"/>
@@ -97,7 +97,7 @@
 	<tr>
 		<td colspan="100">
 		<center>
-		<button type="submit" class="btn btn-danger btn-large" name="method:save">儲存</button>
+		<button type="submit" class="btn btn-danger btn-large save" name="method:save">儲存</button>
 		<a class="btn btn-default btn-large" onClick="javascript: return(confirm('離開前請確認已點選儲存按鈕')); void('')" href="ScoreManager">離開</a>
 		</center>
 		</td>
@@ -123,15 +123,13 @@
   </div>
 </div>
 <script>
-
-
-
-
+<c:if test="${!empty date2}">$("input").prop("disabled", true);$(".save").prop("disabled", true);</c:if>
 var p1=parseInt($("#p1").val());
 var p2=parseInt($("#p2").val());
 var p3=parseInt($("#p3").val());
 
 $(document).ready(function() {
+	
 	$('input').attr('autocomplete','off');
 	$('.elary').popover("show");	
 	setTimeout(function() {		

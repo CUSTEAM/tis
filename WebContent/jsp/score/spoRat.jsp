@@ -15,7 +15,7 @@
 <form action="ScoreManager" method="post" class="form-inline" >
 <div class="bs-callout bs-callout-warning" id="callout-helper-pull-navbar">
 <h4> ${csinfo.ClassName}, ${csinfo.chi_name}</h4>
-輸入完成請先點選<button type="submit" class="btn btn-xs btn-danger" name="method:save">儲存</button> 確認後再點選 <a class="btn btn-default btn-xs" href="ScoreManager">離開</a>
+輸入完成請先點選<button type="submit" class="btn btn-xs btn-danger save" name="method:save">儲存</button> 確認後再點選 <a class="btn btn-default btn-xs" href="ScoreManager">離開</a>
 1.方向鍵  ↑ ↓ 能使游標垂直移動 2.計算功能為輔助,欄位可自由修改3.依各欄位顯示資料為儲存依據
 </div>
 <br><br><br>
@@ -84,7 +84,7 @@
 	</c:forEach>
 	<tr class="hairLineTdF" align="center">
 		<td class="hairLineTdF" colspan="100">
-		<button type="submit" class="btn btn-danger" name="method:save">儲存</button>
+		<button type="submit" class="btn btn-danger save" name="method:save">儲存</button>
 		<a class="btn btn-default" href="ScoreManager">離開</a>
 		</td>
 	</tr>
@@ -108,6 +108,7 @@
 </div>
 <script>
 $(document).ready(function() {
+	<c:if test="${!empty date2}">$("input").prop("disabled", true);$(".save").prop("disabled", true);</c:if>
 	$('input').attr('autocomplete','off');
 	$('.elary').popover("show");	
 	setTimeout(function() {		
