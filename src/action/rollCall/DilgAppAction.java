@@ -85,15 +85,30 @@ public class DilgAppAction extends BaseAction{
 						df.update(d);//寫入結果並結案
 						df.exSql("UPDATE Dilg SET abs='"+d.getAbs()+"' WHERE Dilg_app_oid="+Oid[i]);//假單中的課均改為假別
 					}else{
+						d.setRealLevel(String.valueOf(Integer.parseInt(d.getRealLevel())+1));	
+						//尋找下一層審核者
+						String nexter;
+						if(d.getRealLevel().equals("2")){//2階改為系主任
+							nexter=df.sqlGetStr("SELECT cd.director FROM CODE_DEPT cd, Class c, stmd s WHERE cd.id=c.DeptNo AND c.ClassNo=s.depart_class AND s.student_no='"+d.getStudent_no()+"'");
+							//為防止系主任為空缺
+							if(nexter==null||nexter.equals("")){
+								nexter=df.sqlGetStr("SELECT d.idno FROM stmd s, Dilg_charge d, Class c WHERE " +
+								"s.depart_class=c.ClassNo AND d.CampusNo=c.CampusNo AND d.SchoolType=c.SchoolType AND " +
+								//"d.level='"+d.getRealLevel()+"' AND s.student_no='"+d.getStudent_no()+"'");
+								"d.level='2' AND s.student_no='"+d.getStudent_no()+"'");
+							}						
+						}else{//3階學務長？							
+							nexter=df.sqlGetStr("SELECT d.idno FROM stmd s, Dilg_charge d, Class c WHERE " +
+							"s.depart_class=c.ClassNo AND d.CampusNo=c.CampusNo AND d.SchoolType=c.SchoolType AND " +
+							//"d.level='"+d.getRealLevel()+"' AND s.student_no='"+d.getStudent_no()+"'");
+							"d.level='3' AND s.student_no='"+d.getStudent_no()+"'");
+						}						
 						//預設層級與目前層級不同時需後送，不寫入結果但要寫入歷程
 						d.setResult(null);//後送待審中
 						d.setReply(reply[i]);
-						d.setRealLevel(String.valueOf(Integer.parseInt(d.getRealLevel())+1));
-						//尋找下一層審核者
-						d.setAuditor((df.sqlGetStr("SELECT d.idno FROM stmd s, Dilg_charge d, Class c WHERE " +
-						"s.depart_class=c.ClassNo AND d.CampusNo=c.CampusNo AND d.SchoolType=c.SchoolType AND " +
-						"d.level='"+d.getRealLevel()+"' AND s.student_no='"+d.getStudent_no()+"'")));
-						df.update(d);//後送
+											
+						d.setAuditor(nexter);
+						df.update(d);//後送						
 						df.exSql("UPDATE Dilg SET abs='"+d.getAbs()+"' WHERE Dilg_app_oid="+Oid[i]);//假單中的課均改為假別
 						//建立歷程
 						DilgApplyHist dah=new DilgApplyHist();
