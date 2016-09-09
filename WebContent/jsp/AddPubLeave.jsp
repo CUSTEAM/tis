@@ -74,7 +74,7 @@ $(document).ready(function() {
 			<td width="100%">
 			<select name="begin" class="form-control">
 				<option value="0">開始節次</option>		
-				<c:forEach begin="1" end="14" var="b">
+				<c:forEach begin="1" end="16" var="b">
 				<option <c:if test="${b eq begin}">selected</c:if> value="${b}">第${b}節</option>
 				</c:forEach>
 			</select>
@@ -86,7 +86,7 @@ $(document).ready(function() {
 			<td>
 			<select name="end" class="form-control">
 				<option value="0">結束節次</option>		
-				<c:forEach begin="1" end="14" var="b">
+				<c:forEach begin="1" end="16" var="b">
 				<option <c:if test="${b eq end}">selected</c:if> value="${b}">第${b}節</option>
 				</c:forEach>
 			</select>
