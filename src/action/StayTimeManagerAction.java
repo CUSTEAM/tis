@@ -30,6 +30,7 @@ public class StayTimeManagerAction extends BaseAction{
 		int sum=0;//生活輔導
 		List<Map>tmp=df.sqlGet("SELECT IFNULL(IF(COUNT(*)>30, 4, 2),0)as c FROM stmd s,Class c WHERE s.depart_class=c.ClassNo AND c.tutor='"+getSession().getAttribute("userid")+"' GROUP BY c.ClassNo");
 		for(int i=0; i<tmp.size(); i++)sum+=Integer.parseInt(tmp.get(i).get("c").toString());
+		if(sum>4)sum=4;//2016-09-16依主任要求修改為大於4等於4
 		rule.put("tutor", sum);
 			
 		//取課程
