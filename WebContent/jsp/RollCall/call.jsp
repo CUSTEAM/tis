@@ -55,8 +55,12 @@ $(document).ready(function() {
 </div>
 <form class="form-inline">
 
+   
+
+<c:if test="${fn:length(dclass) <= 5}">
 <div class="row">
 	<div class="col-xs-12 col-md-6">
+</c:if>
 	  	<div class="panel panel-primary">  
 	  	<div class="panel-heading">學號排序前<fmt:formatNumber value="${(fn:length(students)/2)+1}" maxFractionDigits="0" />名</div>
 		
@@ -127,11 +131,11 @@ $(document).ready(function() {
 		</table>
 		</div>
   
-  
-  	</div>
-  	
-  	
+  	<c:if test="${fn:length(dclass) <= 5}">
+  	</div>  	
   	<div class="col-xs-12 col-md-6">
+  	</c:if>
+  	
 	  	<div class="panel panel-primary">  
 	  	<div class="panel-heading">學號排序<fmt:formatNumber value="${(fn:length(students)/2)+2}" maxFractionDigits="0" />至<fmt:formatNumber value="${fn:length(students)}" maxFractionDigits="0" />名</div>
 		
@@ -201,21 +205,10 @@ $(document).ready(function() {
 		</table>
 		</div>
   
-  
+<c:if test="${fn:length(dclass) <=5}">
   	</div>
 </div>
-
-
-
-
-
-
-		
-
-
-
-
-</div>
+</c:if>
 </form>
 <script>
 function editDilg(no, cls, abs){

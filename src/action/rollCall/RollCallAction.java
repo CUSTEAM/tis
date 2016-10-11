@@ -125,8 +125,8 @@ public class RollCallAction extends BaseAction{
 					}catch(Exception e){
 						DilgLog_date_due=0;
 					}					
-							
-					
+					System.out.println("SELECT due FROM DilgLog WHERE date='"+date+"' AND Dtime_oid="+Dtime_oid);	
+					System.out.println(DilgLog_date+","+DilgLog_date_due);
 					map.put("date", DilgLog_date);
 					map.put("sdate", c.getTimeInMillis());
 					
@@ -137,7 +137,7 @@ public class RollCallAction extends BaseAction{
 						map.put("log", true);
 					}else{
 						map.put("select", sam.Seld_count(Dtime_oid));
-						map.put("info", null);
+						map.put("info", "0人");
 						map.put("log", false);
 					}
 					
