@@ -854,7 +854,6 @@ public class DilgImpDateManagerAction extends BaseAction{
 						
 			
 			if(nt>0){
-				//System.out.println(st+","+tot+"="+st/tot);
 				avg = (float) st / tot;
 				out.println ("    <Cell ss:StyleID='s74'><Data ss:Type='String'>"+(int)(avg*100)+"%</Data></Cell>");//出席
 				out.println ("    <Cell ss:StyleID='s82'><Data ss:Type='String'>"+(float)nt/cnt+"</Data></Cell>");//人均				

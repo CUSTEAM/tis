@@ -245,7 +245,6 @@ public class DilgViewAction extends BaseAction{
 		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
 		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");			
 		sql.append("ORDER BY c.ClassNo");
-		//System.out.println(sql);
 		List<Map>cls=df.sqlGet(sql.toString());
 		
 		List<Map>tmp=null;

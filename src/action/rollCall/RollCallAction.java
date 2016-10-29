@@ -125,8 +125,6 @@ public class RollCallAction extends BaseAction{
 					}catch(Exception e){
 						DilgLog_date_due=0;
 					}					
-					System.out.println("SELECT due FROM DilgLog WHERE date='"+date+"' AND Dtime_oid="+Dtime_oid);	
-					System.out.println(DilgLog_date+","+DilgLog_date_due);
 					map.put("date", DilgLog_date);
 					map.put("sdate", c.getTimeInMillis());
 					
@@ -298,7 +296,6 @@ public class RollCallAction extends BaseAction{
 			
 			sb.delete(sb.length()-1, sb.length());				
 			sb.append("]");
-			//System.out.println(sb);
 			if(i<18){sb.append(",");}
 			sba[i]=sb.toString();
 			map.put("dilgs", sba);		

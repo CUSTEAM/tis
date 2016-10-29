@@ -56,7 +56,6 @@ public class OneThirdViewViewAction extends BaseAction{
 		
 		List<Map>tmp=new ArrayList();			
 		for(int i=0; i<stds.size(); i++){	
-			//System.out.println(stds.get(i).get("max")+"-"+stds.get(i).get("cnt")+"="+(Integer.parseInt(stds.get(i).get("max").toString())-Integer.parseInt(stds.get(i).get("cnt").toString())));
 			if((Integer.parseInt(stds.get(i).get("max").toString())-Integer.parseInt(stds.get(i).get("cnt").toString()))<range){
 				tmp.add(stds.get(i));
 			}

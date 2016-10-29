@@ -50,10 +50,6 @@ public class CoanswViewAction extends BaseAction{
 			cnt+=Integer.parseInt(pieData.get(i).get("cnt").toString());
 		}
 		
-		//e=(eff/cnt)*100;
-		//s=((sam-eff)/cnt)*100;
-		//c=((cnt-sam)/cnt)*100;
-		//System.out.println(e+s+c);
 		request.setAttribute("eff", eff);
 		request.setAttribute("sam", sam-eff);
 		request.setAttribute("cnt",cnt-sam);
@@ -103,7 +99,6 @@ public class CoanswViewAction extends BaseAction{
 			for(int j=0; j<ans.size(); j++){				
 				c+=Integer.parseInt(String.valueOf(ans.get(j).get("coansw").toString().charAt(i)));
 			}	
-			//System.out.println(ans.get(i));
 			tmp.append((c/(float)ans.size())+",");
 		}
 		tmp.delete(tmp.length()-1, tmp.length());
