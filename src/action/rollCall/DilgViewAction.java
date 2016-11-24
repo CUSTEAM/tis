@@ -45,8 +45,7 @@ public class DilgViewAction extends BaseAction{
 			
 			return "detail";
 		}		
-	}
-	
+	}	
 	
 	public String creatSearch(){
 		
@@ -202,13 +201,7 @@ public class DilgViewAction extends BaseAction{
 	 * 期中成績關係表
 	 * @return
 	 */
-	public String exScorePrint(){		
-		/*int cnt;
-		List<Map>list;
-		String school_term=(String) getContext().getAttribute("school_term");
-		Date school_term_begin=(Date) getContext().getAttribute("date_school_term_begin");
-		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		*/
+	public String exScorePrint(){	
 		
 		StringBuilder sql=new StringBuilder();
 		if(printType.equals("score2"))
@@ -312,6 +305,11 @@ public class DilgViewAction extends BaseAction{
 		return "exScore";
 	}
 	
+	/**
+	 * 缺曠趨勢
+	 * @return
+	 * @throws IOException
+	 */
 	public String print() throws IOException{
 		Date date=new Date();
 		response.setContentType("application/vnd.ms-excel; charset=UTF-8");
@@ -411,15 +409,54 @@ public class DilgViewAction extends BaseAction{
 		out.println ("    <Cell><Data ss:Type='String'>系主任</Data><NamedCell ss:Name='Print_Titles'/></Cell>");
 		//out.println ("    <Cell><Data ss:Type='String'>院長</Data><NamedCell ss:Name='Print_Titles'/></Cell>");
 		out.println ("   </Row>");
-		DecimalFormat d=new DecimalFormat("#.##");
 		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		if(filter==null){//無選擇
+			out.println ("  </Table>");
+			out.println ("  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>");
+			out.println ("   <PageSetup>");
+			out.println ("    <Layout x:Orientation='Landscape'/>");
+			out.println ("    <Header x:Margin='0.31496062992125984' x:Data='&amp;C&amp;&quot;微軟正黑體,粗體&quot;&amp;24未選擇假別'/>");
+			out.println ("    <Footer x:Margin='0.31496062992125984' x:Data='&amp;L列印時間 "+sf.format(date)+"&amp;R&amp;P/&amp;N'/>");
+			out.println ("    <PageMargins x:Bottom='0.74803149606299213' x:Left='0.23622047244094491'");
+			out.println ("     x:Right='0.23622047244094491' x:Top='0.74803149606299213'/>");
+			out.println ("   </PageSetup>");
+			out.println ("   <Unsynced/>");
+			out.println ("   <Print>");
+			out.println ("    <ValidPrinterInfo/>");
+			out.println ("    <PaperSizeIndex>9</PaperSizeIndex>");
+			out.println ("    <HorizontalResolution>-1</HorizontalResolution>");
+			out.println ("    <VerticalResolution>-1</VerticalResolution>");
+			out.println ("   </Print>");
+			out.println ("   <ProtectObjects>False</ProtectObjects>");
+			out.println ("   <ProtectScenarios>False</ProtectScenarios>");
+			out.println ("  </WorksheetOptions>");
+			out.println (" </Worksheet>");
+			out.println ("</Workbook>");
+			out.close();		
+			return null;
+		}
+		
+		DecimalFormat d=new DecimalFormat("#.##");
+		
 		int sts;
 		Calendar begin=Calendar.getInstance();
 		begin.setTime((Date) getContext().getAttribute("date_rollcall_begin"));
-		StringBuilder sql=new StringBuilder("SELECT c.ClassName, "
-				+ "(SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"')as gstmds,");
+		
+		
+		
+		
+		
+		StringBuilder sql=new StringBuilder("SELECT c.ClassName,(SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"')as gstmds,");
+		
+		
+		
 		for(int i=1; i<=17; i++){			
-			sql.append("(SELECT COUNT(*)FROM Dilg di, stmd st WHERE (abs!='5'&&abs!='6') AND di.date>='"+sf.format(begin.getTime())+"'");
+			sql.append("(SELECT COUNT(*)FROM Dilg di, stmd st WHERE abs IN(");
+			for(int j=0; j<filter.length; j++){
+				sql.append("'"+filter[j]+"',");
+			}
+			sql.delete(sql.length()-1, sql.length());
+			sql.append(")AND di.date>='"+sf.format(begin.getTime())+"'");
 			begin.add(Calendar.DAY_OF_YEAR, 7);
 			sql.append("AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo)as cnt"+i+",");
 		}
@@ -436,6 +473,7 @@ public class DilgViewAction extends BaseAction{
 		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");		
 		sql.append("ORDER BY c.ClassNo");
 		
+		//System.out.println(sql);
 		List<Map>list=df.sqlGet(sql.toString());
 		
 		float total, avg;
@@ -695,7 +733,10 @@ public class DilgViewAction extends BaseAction{
 		return null;
 	}
 	
-	
+	/**
+	 * 期中考無成績
+	 * @return
+	 */
 	public String nonexamPrint(){
 		StringBuilder sql=new StringBuilder("SELECT c.ClassNo, c.ClassName, e.cname FROM "
 		+ "Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno WHERE c.Type='P'");
@@ -796,4 +837,5 @@ public class DilgViewAction extends BaseAction{
 	public String gno;
 	public String zno;
 	public String printType;
+	public String filter[];
 }

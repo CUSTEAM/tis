@@ -177,7 +177,7 @@
     <Cell><Data ss:Type="Number">${s.credit}</Data></Cell>
     <Cell><Data ss:Type="Number">${s.cnt}</Data></Cell>
     <Cell><Data ss:Type="Number">${s.zero}</Data></Cell>
-    <Cell><Data ss:Type="String">${s.score2}</Data></Cell>
+    <Cell><Data ss:Type="String"></Data></Cell>
    </Row>
    </c:if>
    </c:forEach>
