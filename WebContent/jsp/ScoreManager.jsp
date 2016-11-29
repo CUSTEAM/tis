@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
@@ -69,8 +69,9 @@
 	</tr>
 	<c:forEach items="${myClass}" var="m">	
 	<tr>
-		<td nowrap>${m.ClassName}<br><font size="-1">${m.dtimeClass}</font></td>
-		<td nowrap>${m.chi_name}</td>
+		<td nowrap>${m.ClassName}<br><small>${m.fname}${m.credit}學分</small></td>
+		<td nowrap>${m.chi_name}<br><small>選課${m.st}, 期中評分${m.s2f}, 期末評分${m.sf}</small>
+		</td>
 		<td nowrap>
 		
 		<c:forEach items="${m.time}" var="t">
@@ -101,8 +102,8 @@
 		
 		<div class="btn-group" role="group" aria-label="...">
 		<button type="submit" class="btn btn-primary" name="method:edit" onClick="cho('${m.Oid}', $('#type${m.Oid}').val());">編輯各項成績</button>
-		<button type="button" class="btn btn-default" onClick="chosRt('m', $('#type${m.Oid}').val(), '${m.Oid}');" >期中列印</button>
-		<button type="button" class="btn btn-default" onClick="chosRt('f', $('#type${m.Oid}').val(), '${m.Oid}');">期末列印</button>
+		<button <c:if test="${m.s2f ne m.st}">disabled</c:if> type="button" class="btn btn-default" onClick="chosRt('m', $('#type${m.Oid}').val(), '${m.Oid}');" >期中列印</button>
+		<button <c:if test="${m.sf ne m.st}">disabled</c:if> type="button" class="btn btn-default" onClick="chosRt('f', $('#type${m.Oid}').val(), '${m.Oid}');">期末列印</button>
 		</div>
 		</td>
 	</tr>

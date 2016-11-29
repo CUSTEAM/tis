@@ -19,11 +19,16 @@ public class ScoreManagerAction extends BaseAction{
 	public String execute(){		
 		String term=(String)getContext().getAttribute("school_term");		
 		//get single teacher list
-		List<Map>myClass=df.sqlGet("SELECT cl.className, cs.chi_name, d.Oid, cs.cscode, cl.classNo, d.Sterm FROM Dtime d, Csno cs, Class cl "+ 
-		"WHERE d.cscode=cs.cscode AND d.depart_class=cl.classNo AND d.Sterm='"+term+"' AND d.techid='"+getSession().getAttribute("userid")+
+		List<Map>myClass=df.sqlGet("SELECT cdo.fname, d.credit,cl.className, (SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid AND score IS NOT NULL)as sf, (SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid)as st,"
+		+ "(SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid AND score2 IS NOT NULL)as s2f,"
+		+ "cs.chi_name, d.Oid, cs.cscode, cl.classNo, d.Sterm FROM CODE_DTIME_OPT cdo, Dtime d, Csno cs, Class cl "+ 
+		"WHERE cdo.id=d.opt AND d.cscode=cs.cscode AND d.depart_class=cl.classNo AND d.Sterm='"+term+"' AND d.techid='"+getSession().getAttribute("userid")+
 		"' AND d.cscode!='50000'ORDER BY d.depart_class");
-		//get mult-teachers list
-		myClass.addAll(df.sqlGet("SELECT cl.className, cs.chi_name, d.Oid, cs.cscode, cl.classNo, d.Sterm FROM "
+		//get mult-teachers list		
+		myClass.addAll(df.sqlGet("SELECT d.opt,d.credit, cl.className, cs.chi_name, d.Oid, cs.cscode, cl.classNo, d.Sterm,"
+				+ "(SELECT COUNT(*)FROM Seld WHERE Dtime_teacher=dt.Oid AND score2 IS NOT NULL)as s2f,"
+				+ "(SELECT COUNT(*)FROM Seld WHERE Dtime_teacher=dt.Oid AND score IS NOT NULL)as sf,"
+				+ "(SELECT COUNT(*)FROM Seld WHERE Dtime_teacher=dt.Oid)as st FROM "
 		+ "Dtime d, Csno cs, Class cl,Dtime_teacher dt WHERE "
 		+ "d.Oid=dt.Dtime_oid AND (d.techid IS NULL OR d.techid='')AND cs.cscode!='50000'AND "
 		+ "d.cscode=cs.cscode AND d.depart_class=cl.classNo AND d.Sterm='"+term+"' AND "
