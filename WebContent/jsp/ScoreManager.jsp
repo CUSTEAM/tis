@@ -87,7 +87,7 @@
 		</td>
 		<td nowrap>					
 		
-		<select id="type${m.Oid}" class="selectpicker upInput">
+		<select id="type${m.Oid}" class="selectpicker upInput" data-width="auto">
 		  <optgroup label="提供標準成績計算欄位">
 		    <option <c:if test="${m.type==''}">selected</c:if> value="">一般格式</option>		    
 		  </optgroup>
@@ -100,11 +100,16 @@
 		</select>			
 		
 		
+		
+		<button type="submit" class="btn btn-primary" name="method:edit" onClick="cho('${m.Oid}', $('#type${m.Oid}').val());">編輯</button>
+		
 		<div class="btn-group" role="group" aria-label="...">
-		<button type="submit" class="btn btn-primary" name="method:edit" onClick="cho('${m.Oid}', $('#type${m.Oid}').val());">編輯各項成績</button>
-		<button <c:if test="${m.s2f ne m.st}">disabled</c:if> type="button" class="btn btn-default" onClick="chosRt('m', $('#type${m.Oid}').val(), '${m.Oid}');" >期中列印</button>
-		<button <c:if test="${m.sf ne m.st}">disabled</c:if> type="button" class="btn btn-default" onClick="chosRt('f', $('#type${m.Oid}').val(), '${m.Oid}');">期末列印</button>
+		<button class="btn btn-default" name="method:printScore1" onClick="cho('${m.Oid}', $('#type${m.Oid}').val());" >平時</button>
+		<button <c:if test="${m.s2f ne m.st}">disabled</c:if> type="button" class="btn btn-default" onClick="chosRt('m', $('#type${m.Oid}').val(), '${m.Oid}');" >期中</button>
+		<button <c:if test="${m.sf ne m.st}">disabled</c:if> type="button" class="btn btn-default" onClick="chosRt('f', $('#type${m.Oid}').val(), '${m.Oid}');">期末</button>
 		</div>
+		
+		
 		</td>
 	</tr>
 	</c:forEach>

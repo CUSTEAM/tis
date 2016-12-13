@@ -1,5 +1,7 @@
 package action;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,30 +55,32 @@ public class ScoreManagerAction extends BaseAction{
 		return SUCCESS;
 	}
 	
+	private List<Map>students;
+	
+	private void getStds(){		
+		if(df.sqlGetInt("SELECT COUNT(*) FROM Dtime_teacher dt, Dtime d WHERE dt.Dtime_oid=d.Oid AND (d.techid='' OR d.techid IS NULL)AND " +
+			"dt.Dtime_oid="+Dtime_oid+" AND dt.teach_id='"+getSession().getAttribute("userid")+"'")>0){
+			//取分組
+			students=df.sqlGet("SELECT st.student_name, s.*,c.ClassName FROM Dtime d, stmd st, Seld s, Class c WHERE c.ClassNo=st.depart_class, st.student_no=s.student_no AND "
+			+"s.Dtime_oid=d.Oid AND d.Oid="+Dtime_oid+" AND s.Dtime_teacher=(SELECT Oid FROM Dtime_teacher WHERE "
+			+"Dtime_oid="+Dtime_oid+" AND teach_id='"+getSession().getAttribute("userid")+"')ORDER BY st.student_no");
+		}else{
+			//取全班
+			students=df.sqlGet("SELECT st.student_name, s.*, c.ClassName FROM Seld s, stmd st, Class c WHERE c.ClassNo=st.depart_class AND "
+			+"s.student_no=st.student_no AND s.Dtime_oid='"+Dtime_oid+"' ORDER BY st.student_no");
+		}		
+	}
+	
 	/**
 	 * get students
 	 * @return
 	 * @throws ParseException 
 	 */
 	public String edit() throws ParseException{
-		//判斷取全班或取分組
-		List stds;
-		if(df.sqlGetInt("SELECT COUNT(*) FROM Dtime_teacher dt, Dtime d WHERE dt.Dtime_oid=d.Oid AND (d.techid='' OR d.techid IS NULL)AND " +
-		"dt.Dtime_oid="+Dtime_oid+" AND dt.teach_id='"+getSession().getAttribute("userid")+"'")>0){
-			//取分組
-			request.setAttribute("students", df.sqlGet("SELECT st.student_name, s.* FROM Dtime d, stmd st, Seld s WHERE st.student_no=s.student_no AND "
-			+"s.Dtime_oid=d.Oid AND d.Oid="+Dtime_oid+" AND s.Dtime_teacher=(SELECT Oid FROM Dtime_teacher WHERE "
-			+"Dtime_oid="+Dtime_oid+" AND teach_id='"+getSession().getAttribute("userid")+"')ORDER BY st.student_no"));
-		}else{
-			//取全班
-			request.setAttribute("students", df.sqlGet("SELECT st.student_name, s.* FROM Seld s, stmd st WHERE "
-			+"s.student_no=st.student_no AND s.Dtime_oid='"+Dtime_oid+"' ORDER BY st.student_no"));
-		}
-		
+		getStds();	
+		request.setAttribute("students", students);
 		request.setAttribute("csinfo", df.sqlGetMap("SELECT c.ClassName, cs.chi_name FROM Dtime d, Class c, Csno cs WHERE d.depart_class=c.ClassNo AND d.cscode=cs.cscode AND d.Oid="+Dtime_oid));
-		request.setAttribute("Dtime_oid", Dtime_oid);
-		
-		
+		request.setAttribute("Dtime_oid", Dtime_oid);		
 		//expire date for input percentage of score
 		Date now=new Date();
 		Date edper; //成績比例參考時間
@@ -217,6 +221,251 @@ public class ScoreManagerAction extends BaseAction{
 		msg.setSuccess("已儲存成績比例");
 		savMessage(msg);
 		return edit();
+	}
+	
+	public String printScore1() throws IOException{		
+		getStds();		
+		Date date=new Date();
+		response.setContentType("text/html; charset=UTF-8");
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");
+		PrintWriter out=response.getWriter();
+		
+		out.println ("<?xml version='1.0'?>");
+		out.println ("<?mso-application progid='Excel.Sheet'?>");
+		out.println ("<Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet'");
+		out.println (" xmlns:o='urn:schemas-microsoft-com:office:office'");
+		out.println (" xmlns:x='urn:schemas-microsoft-com:office:excel'");
+		out.println (" xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'");
+		out.println (" xmlns:html='http://www.w3.org/TR/REC-html40'>");
+		out.println (" <DocumentProperties xmlns='urn:schemas-microsoft-com:office:office'>");
+		out.println ("  <Author>John</Author>");
+		out.println ("  <LastAuthor>John</LastAuthor>");
+		out.println ("  <LastPrinted>2016-12-13T07:47:08Z</LastPrinted>");
+		out.println ("  <Created>2016-12-13T02:18:56Z</Created>");
+		out.println ("  <LastSaved>2016-12-13T02:29:03Z</LastSaved>");
+		out.println ("  <Version>15.00</Version>");
+		out.println (" </DocumentProperties>");
+		out.println (" <OfficeDocumentSettings xmlns='urn:schemas-microsoft-com:office:office'>");
+		out.println ("  <AllowPNG/>");
+		out.println (" </OfficeDocumentSettings>");
+		out.println (" <ExcelWorkbook xmlns='urn:schemas-microsoft-com:office:excel'>");
+		out.println ("  <WindowHeight>12390</WindowHeight>");
+		out.println ("  <WindowWidth>28800</WindowWidth>");
+		out.println ("  <WindowTopX>0</WindowTopX>");
+		out.println ("  <WindowTopY>0</WindowTopY>");
+		out.println ("  <ProtectStructure>False</ProtectStructure>");
+		out.println ("  <ProtectWindows>False</ProtectWindows>");
+		out.println (" </ExcelWorkbook>");
+		out.println (" <Styles>");
+		out.println ("  <Style ss:ID='Default' ss:Name='Normal'>");
+		out.println ("   <Alignment ss:Vertical='Center'/>");
+		out.println ("   <Borders/>");
+		out.println ("   <Font ss:FontName='新細明體' x:CharSet='136' x:Family='Roman' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("   <Interior/>");
+		out.println ("   <NumberFormat/>");
+		out.println ("   <Protection/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s62'>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s63'>");
+		out.println ("   <Borders>");
+		out.println ("    <Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("    <Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("   </Borders>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s64'>");
+		out.println ("   <Borders>");
+		out.println ("    <Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("   </Borders>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s65'>");
+		out.println ("   <Borders>");
+		out.println ("    <Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("    <Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("   </Borders>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s69'>");
+		out.println ("   <Alignment ss:Horizontal='Center' ss:Vertical='Center'/>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s70'>");
+		out.println ("   <Alignment ss:Horizontal='Center' ss:Vertical='Center'/>");
+		out.println ("   <Borders>");
+		out.println ("    <Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("    <Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("   </Borders>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s71'>");
+		out.println ("   <Alignment ss:Horizontal='Center' ss:Vertical='Center'/>");
+		out.println ("   <Borders>");
+		out.println ("    <Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("   </Borders>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Size='12'");
+		out.println ("    ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s72'>");
+		out.println ("   <Alignment ss:Horizontal='Center' ss:Vertical='Center'/>");
+		out.println ("   <Borders>");
+		out.println ("    <Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("   </Borders>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println ("  <Style ss:ID='s73'>");
+		out.println ("   <Alignment ss:Horizontal='Center' ss:Vertical='Center'/>");
+		out.println ("   <Borders>");
+		out.println ("    <Border ss:Position='Bottom' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Left' ss:LineStyle='Continuous' ss:Weight='1'/>");
+		out.println ("    <Border ss:Position='Right' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("    <Border ss:Position='Top' ss:LineStyle='Continuous' ss:Weight='2'/>");
+		out.println ("   </Borders>");
+		out.println ("   <Font ss:FontName='微軟正黑體' x:CharSet='136' x:Family='Swiss' ss:Color='#000000'/>");
+		out.println ("  </Style>");
+		out.println (" </Styles>");
+		out.println (" <Worksheet ss:Name='工作表1'>");
+		out.println ("  <Names>");
+		out.println ("   <NamedRange ss:Name='Print_Titles' ss:RefersTo='=工作表1!R1'/>");
+		out.println ("  </Names>");
+		out.println ("  <Table ss:ExpandedColumnCount='14' ss:ExpandedRowCount='"+(students.size()+999)+"' x:FullColumns='1'");
+		out.println ("   x:FullRows='1' ss:StyleID='s62' ss:DefaultColumnWidth='54'");
+		out.println ("   ss:DefaultRowHeight='15.75'>");
+		out.println ("   <Column ss:StyleID='s63' ss:AutoFitWidth='0' ss:Width='87.75'/>");
+		out.println ("   <Column ss:StyleID='s64' ss:AutoFitWidth='0' ss:Width='75.75'/>");
+		out.println ("   <Column ss:StyleID='s64' ss:AutoFitWidth='0' ss:Width='48'/>");
+		out.println ("   <Column ss:StyleID='s64' ss:AutoFitWidth='0' ss:Width='34.5' ss:Span='9'/>");
+		out.println ("   <Column ss:Index='14' ss:StyleID='s65' ss:AutoFitWidth='0' ss:Width='34.5'/>");
+		out.println ("   <Row ss:AutoFitHeight='0' ss:StyleID='s69'>");
+		out.println ("    <Cell ss:StyleID='s70'><Data ss:Type='String'>班級</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s71'><Data ss:Type='String'>學號</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s71'><Data ss:Type='String'>姓名</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第1次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第2次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第3次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第4次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第5次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第6次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第7次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第8次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第9次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s72'><Data ss:Type='String'>第10次</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("    <Cell ss:StyleID='s73'><Data ss:Type='String'>平均</Data><NamedCell");
+		out.println ("      ss:Name='Print_Titles'/></Cell>");
+		out.println ("   </Row>");
+		
+		//int tot, cnt;
+		for(int i=0; i<students.size(); i++){
+			out.println ("   <Row ss:AutoFitHeight='0'>");
+			out.println ("    <Cell><Data ss:Type='String'>"+students.get(i).get("ClassName")+"</Data></Cell>");
+			out.println ("    <Cell><Data ss:Type='String'>"+students.get(i).get("student_no")+"</Data></Cell>");
+			out.println ("    <Cell><Data ss:Type='String'>"+students.get(i).get("student_name")+"</Data></Cell>");			
+			for(int j=1; j<=9; j++){
+				if(students.get(i).get("score0"+j)==null){
+					out.println ("    <Cell><Data ss:Type='String'></Data></Cell>");
+				}else{
+					out.println ("    <Cell><Data ss:Type='Number'>"+students.get(i).get("score0"+j)+"</Data></Cell>");
+				}				
+			}
+			if(students.get(i).get("score10")==null){
+				out.println ("    <Cell><Data ss:Type='String'></Data></Cell>");
+			}else{
+				out.println ("    <Cell><Data ss:Type='Number'>"+students.get(i).get("score10")+"</Data></Cell>");
+			}
+			
+			
+			if(students.get(i).get("score1")==null){
+				out.println ("    <Cell><Data ss:Type='String'></Data></Cell>");
+			}else{
+				out.println ("    <Cell><Data ss:Type='Number'>"+students.get(i).get("score1")+"</Data></Cell>");
+			}
+				
+			
+			out.println ("   </Row>");
+		}
+		
+		Map info=df.sqlGetMap("SELECT e.cname, cs.chi_name,  cdo.name as opt, d.thour, d.credit, (SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid)as cnt FROM "
+				+ "Dtime d, Csno cs, CODE_DTIME_OPT cdo, empl e WHERE e.idno=d.techid AND d.opt=cdo.id AND d.cscode=cs.cscode AND d.Oid="+Dtime_oid);
+		out.println ("  </Table>");
+		out.println ("  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>");
+		out.println ("   <PageSetup>");
+		out.println ("    <Header x:Margin='0.31496062992125984'");
+		out.println ("     x:Data='&amp;L&amp;8"+info.get("opt")+", "+info.get("credit")+"學分, "+info.get("thour")+"小時, &#10;學生"+info.get("cnt")+"人&#10;授課教師 "+info.get("cname")+"&amp;C&amp;&quot;微軟正黑體,標準&quot;中華科技大學 105學年第 1學期四技資管三乙成績冊&#10;資料庫程式設計'/>");
+		out.println ("    <Footer x:Margin='0.31496062992125984' x:Data='&amp;L&amp;D&amp;R&amp;P/&amp;N'/>");
+		out.println ("    <PageMargins x:Bottom='0.74803149606299213' x:Left='0.23622047244094491'");
+		out.println ("     x:Right='0.23622047244094491' x:Top='0.74803149606299213'/>");
+		out.println ("   </PageSetup>");
+		out.println ("   <Unsynced/>");
+		out.println ("   <Print>");
+		out.println ("    <ValidPrinterInfo/>");
+		out.println ("    <PaperSizeIndex>9</PaperSizeIndex>");
+		out.println ("    <HorizontalResolution>-1</HorizontalResolution>");
+		out.println ("    <VerticalResolution>-1</VerticalResolution>");
+		out.println ("   </Print>");
+		out.println ("   <PageBreakZoom>60</PageBreakZoom>");
+		out.println ("   <Selected/>");
+		out.println ("   <FreezePanes/>");
+		out.println ("   <FrozenNoSplit/>");
+		out.println ("   <SplitHorizontal>1</SplitHorizontal>");
+		out.println ("   <TopRowBottomPane>1</TopRowBottomPane>");
+		out.println ("   <ActivePane>2</ActivePane>");
+		out.println ("   <Panes>");
+		out.println ("    <Pane>");
+		out.println ("     <Number>3</Number>");
+		out.println ("    </Pane>");
+		out.println ("    <Pane>");
+		out.println ("     <Number>2</Number>");
+		out.println ("     <ActiveRow>13</ActiveRow>");
+		out.println ("     <ActiveCol>17</ActiveCol>");
+		out.println ("    </Pane>");
+		out.println ("   </Panes>");
+		out.println ("   <ProtectObjects>False</ProtectObjects>");
+		out.println ("   <ProtectScenarios>False</ProtectScenarios>");
+		out.println ("  </WorksheetOptions>");
+		out.println (" </Worksheet>");
+		out.println ("</Workbook>");
+		
+		out.close();
+		out.flush();
+		return null;
 	}
 
 }

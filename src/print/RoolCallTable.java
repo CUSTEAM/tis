@@ -191,7 +191,6 @@ public class RoolCallTable extends BaseAction{
 			
 		out.println("</body>");
 		out.println("</html>");
-		out.close();		
 		out.close();
 		return null;
 	}
