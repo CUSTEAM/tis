@@ -61,7 +61,7 @@ public class ScoreManagerAction extends BaseAction{
 		if(df.sqlGetInt("SELECT COUNT(*) FROM Dtime_teacher dt, Dtime d WHERE dt.Dtime_oid=d.Oid AND (d.techid='' OR d.techid IS NULL)AND " +
 			"dt.Dtime_oid="+Dtime_oid+" AND dt.teach_id='"+getSession().getAttribute("userid")+"'")>0){
 			//取分組
-			students=df.sqlGet("SELECT st.student_name, s.*,c.ClassName FROM Dtime d, stmd st, Seld s, Class c WHERE c.ClassNo=st.depart_class, st.student_no=s.student_no AND "
+			students=df.sqlGet("SELECT st.student_name, s.*,c.ClassName FROM Dtime d, stmd st, Seld s, Class c WHERE c.ClassNo=st.depart_class AND st.student_no=s.student_no AND "
 			+"s.Dtime_oid=d.Oid AND d.Oid="+Dtime_oid+" AND s.Dtime_teacher=(SELECT Oid FROM Dtime_teacher WHERE "
 			+"Dtime_oid="+Dtime_oid+" AND teach_id='"+getSession().getAttribute("userid")+"')ORDER BY st.student_no");
 		}else{
