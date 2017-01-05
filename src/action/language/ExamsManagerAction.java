@@ -28,7 +28,7 @@ public class ExamsManagerAction extends BaseAction{
 	public String grad1;
 	public String grad2;
 	public String grad3;
-	public String grad4;
+	public String grad4, empls;
 	public String sign_begin;
 	public String sign_end;	
 	public File upload;
@@ -37,8 +37,7 @@ public class ExamsManagerAction extends BaseAction{
 	
 	private List getExams(){
 		
-		return df.sqlGet("SELECT (SELECT COUNT(*)FROM LC_exam_regs ls, stmd s, Class c WHERE " +
-		"ls.student_no=s.student_no AND c.ClassNo=s.depart_class AND c.Grade='1' AND ls.level=e.level AND ls.no=e.no)as cnt1," +
+		return df.sqlGet("SELECT (SELECT COUNT(*)FROM LC_exam_regs ls, empl s WHERE ls.student_no=s.idno AND ls.level=e.level AND ls.no=e.no)as ecnt, (SELECT COUNT(*)FROM LC_exam_regs ls, stmd s, Class c WHERE ls.student_no=s.student_no AND c.ClassNo=s.depart_class AND c.Grade='1' AND ls.level=e.level AND ls.no=e.no)as cnt1," +
 		"(SELECT COUNT(*)FROM LC_exam_regs ls, stmd s, Class c WHERE ls.student_no=s.student_no AND " +
 		"c.ClassNo=s.depart_class AND c.Grade='2' AND ls.level=e.level AND ls.no=e.no)as cnt2,(SELECT COUNT(*)FROM " +
 		"LC_exam_regs ls, stmd s, Class c WHERE ls.student_no=s.student_no AND c.ClassNo=s.depart_class AND c.Grade='3' " +
@@ -64,13 +63,13 @@ public class ExamsManagerAction extends BaseAction{
 			no.trim().equals("")||
 			exam_begin.trim().equals("")||
 			exam_end.trim().equals("")||
-			grad1.trim().equals("")||
-			grad2.trim().equals("")||
-			grad3.trim().equals("")||
-			grad4.trim().equals("")||
+			//grad1.trim().equals("")||
+			//grad2.trim().equals("")||
+			//grad3.trim().equals("")||
+			//grad4.trim().equals("")||
 			sign_begin.trim().equals("")||
 			sign_end.trim().equals("")){			
-			msg.setError("資料不齊全，請完成所有欄位");
+			msg.setError("資料不齊全，請完成所有欄位?");
 			savMessage(msg);
 			return execute();
 		}
@@ -79,12 +78,17 @@ public class ExamsManagerAction extends BaseAction{
 			savMessage(msg);
 			return execute();
 		}
-		
+		if(empls.equals(""))empls="0";
+		if(grad1.equals(""))grad1="0";
+		if(grad2.equals(""))grad2="0";
+		if(grad3.equals(""))grad3="0";
+		if(grad4.equals(""))grad4="0";
 		try{
-			df.exSql("INSERT INTO LC_exam(level,no,note,exam_begin,exam_end,grad1,grad2,grad3,grad4,sign_begin,sign_end)VALUES" +
-					"('"+level+"','"+no+"','"+note+"','"+exam_begin+"','"+exam_end+"','"+grad1+"','"+grad2+"','"+grad3+"','"+grad4+
+			df.exSql("INSERT INTO LC_exam(empls,level,no,note,exam_begin,exam_end,grad1,grad2,grad3,grad4,sign_begin,sign_end)VALUES" +
+					"('"+empls+"','"+level+"','"+no+"','"+note+"','"+exam_begin+"','"+exam_end+"','"+grad1+"','"+grad2+"','"+grad3+"','"+grad4+
 					"','"+sign_begin+"','"+sign_end+"');");
 		}catch(Exception e){
+			e.printStackTrace();
 			msg.setError("請檢查重複梯次、場次");
 			savMessage(msg);
 			return execute();
@@ -95,7 +99,7 @@ public class ExamsManagerAction extends BaseAction{
 			c.setAccount(getSession().getAttribute("userid").toString());		
 			c.setBegin(sf.parse(exam_begin));
 			c.setEnd(sf.parse(exam_end));
-			c.setName("第 "+level+"梯次第 "+no+"場考試");
+			c.setName("第 "+level+"梯次第 "+no+"場");
 			c.setNote("");
 			c.setMembers("");
 			c.setSender(getSession().getAttribute("userid").toString());
@@ -107,7 +111,7 @@ public class ExamsManagerAction extends BaseAction{
 			c.setAccount(getSession().getAttribute("userid").toString());		
 			c.setBegin(sf.parse(sign_begin));
 			c.setEnd(sf.parse(sign_end));
-			c.setName("第 "+level+"梯次第 "+no+"場考試報名");
+			c.setName("第 "+level+"梯次第 "+no+"場報名");
 			c.setSender(getSession().getAttribute("userid").toString());
 			c.setNote("");
 			c.setMembers("");
@@ -242,10 +246,10 @@ public class ExamsManagerAction extends BaseAction{
 			no.trim().equals("")||
 			exam_begin.trim().equals("")||
 			exam_end.trim().equals("")||
-			grad1.trim().equals("")||
-			grad2.trim().equals("")||
-			grad3.trim().equals("")||
-			grad4.trim().equals("")||
+			//grad1.trim().equals("")||
+			//grad2.trim().equals("")||
+			//grad3.trim().equals("")||
+			//grad4.trim().equals("")||
 			sign_begin.trim().equals("")||
 			sign_end.trim().equals("")){
 			
@@ -253,8 +257,12 @@ public class ExamsManagerAction extends BaseAction{
 			savMessage(msg);
 			return SUCCESS;
 		}
-		
-		df.exSql("UPDATE LC_exam SET "+
+		if(empls.equals(""))empls="0";
+		if(grad1.equals(""))grad1="0";
+		if(grad2.equals(""))grad2="0";
+		if(grad3.equals(""))grad3="0";
+		if(grad4.equals(""))grad4="0";
+		df.exSql("UPDATE LC_exam SET empls='"+empls+"',"+
 		"level='"+level+"', "+
 		"no='"+no+"', "+
 		"note='"+note+"', "+
@@ -278,7 +286,7 @@ public class ExamsManagerAction extends BaseAction{
 		
 		PrintStds p=new PrintStds();
 		p.print(response, df.sqlGet("SELECT s.student_no, st.student_name, c.ClassName, st.CellPhone,st.Email FROM LC_exam_stmds s, stmd st, Class c WHERE " +
-		"s.student_no=st.student_no AND st.depart_class=c.ClassNo ORDER BY c.DeptNo, s.student_no"), "");
+		"s.student_no=st.student_no AND st.depart_class=c.ClassNo ORDER BY c.DeptNo, s.student_no"), null,"");
 		return null;
 	}
 	
@@ -286,10 +294,10 @@ public class ExamsManagerAction extends BaseAction{
 		for(int i=0; i<Oids.length; i++){			
 			if(!Oids[i].equals("")){
 				Map info=df.sqlGetMap("SELECT level, no FROM LC_exam WHERE Oid="+Oids[i]);				
-				PrintStds p=new PrintStds();				
+				PrintStds p=new PrintStds();
 				p.print(response, df.sqlGet("SELECT s.student_no, st.student_name, c.ClassName, st.CellPhone,st.Email FROM LC_exam_regs r, LC_exam_stmds s, stmd st, Class c WHERE " +
 				"r.student_no=s.student_no AND r.level='"+info.get("level")+"' AND r.no='"+info.get("no")+"' AND s.student_no=st.student_no AND st.depart_class=c.ClassNo ORDER BY " +
-						"c.DeptNo, s.student_no"), "第 "+info.get("level")+"梯次第  "+info.get("no")+"場");
+						"c.DeptNo, s.student_no"), df.sqlGet("SELECT e.Oid, e.cname, u.name, e.CellPhone,e.Email FROM LC_exam_regs r, empl e LEFT OUTER JOIN CODE_UNIT u ON e.unit=u.id WHERE r.student_no=e.idno AND r.level='"+info.get("level")+"' AND r.no='"+info.get("no")+"'ORDER BY u.id, e.Oid"),"第 "+info.get("level")+"梯次第  "+info.get("no")+"場");
 				break;
 			}
 		}

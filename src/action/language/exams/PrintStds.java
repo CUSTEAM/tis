@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PrintStds {
 	
-	public void print(HttpServletResponse response, List<Map>list, String info) throws IOException{
+	public void print(HttpServletResponse response, List<Map>list, List<Map>elist, String info) throws IOException{
 		
 		Date date=new Date();
 		response.setContentType("text/html; charset=UTF-8");
@@ -75,7 +75,7 @@ public class PrintStds {
 		out.println ("  </Style>");
 		out.println (" </Styles>");				
 			
-			out.println (" <Worksheet ss:Name='aaa'>");
+			out.println (" <Worksheet ss:Name='學生名單'>");
 			out.println ("  <Table ss:ExpandedColumnCount='5' ss:ExpandedRowCount='"+list.size()+1+"' x:FullColumns='1'");		
 			out.println ("   x:FullRows='1' ss:StyleID='s78' ss:DefaultColumnWidth='20'");
 			out.println ("   ss:DefaultRowHeight='25.5'>");
@@ -144,6 +144,87 @@ public class PrintStds {
 			out.println ("   <ProtectScenarios>False</ProtectScenarios>");
 			out.println ("  </WorksheetOptions>");
 			out.println (" </Worksheet>");
+			
+			
+			
+			
+			
+			
+			
+			if(elist!=null){
+				
+				out.println (" <Worksheet ss:Name='教職員名單'>");
+				out.println ("  <Table ss:ExpandedColumnCount='5' ss:ExpandedRowCount='"+elist.size()+1+"' x:FullColumns='1'");		
+				out.println ("   x:FullRows='1' ss:StyleID='s78' ss:DefaultColumnWidth='20'");
+				out.println ("   ss:DefaultRowHeight='25.5'>");
+				
+				out.println ("   <Column ss:StyleID='s76' ss:AutoFitWidth='0' ss:Width='120'/>");
+				out.println ("   <Column ss:StyleID='s76' ss:AutoFitWidth='0' ss:Width='100'/>");			
+				out.println ("   <Column ss:StyleID='s76' ss:AutoFitWidth='0' ss:Width='80'/>");
+				out.println ("   <Column ss:StyleID='s76' ss:AutoFitWidth='0' ss:Width='100'/>");
+				out.println ("   <Column ss:StyleID='s76' ss:AutoFitWidth='0' ss:Width='120'/>");
+				
+				out.println ("   <Row>");
+				out.println ("    <Cell><Data ss:Type='String'>單位</Data></Cell>");
+				out.println ("    <Cell><Data ss:Type='String'>編號</Data></Cell>");
+				out.println ("    <Cell><Data ss:Type='String'>姓名</Data></Cell>");
+				
+				out.println ("    <Cell><Data ss:Type='String'>電話</Data></Cell>");
+				out.println ("    <Cell><Data ss:Type='String'>電子郵件</Data></Cell>");
+				out.println ("   </Row>");		
+				
+				for(int i=0; i<elist.size(); i++){
+					out.println ("   <Row>");
+					out.println ("    <Cell><Data ss:Type='String'>"+elist.get(i).get("name")+"</Data></Cell>");
+					out.println ("    <Cell><Data ss:Type='String'>"+elist.get(i).get("Oid")+"</Data></Cell>");
+					out.println ("    <Cell><Data ss:Type='String'>"+elist.get(i).get("cname")+"</Data></Cell>");
+					
+					out.println ("    <Cell><Data ss:Type='String'>"+elist.get(i).get("CellPhone")+"</Data></Cell>");
+					out.println ("    <Cell><Data ss:Type='String'>"+elist.get(i).get("Email")+"</Data></Cell>");
+					out.println ("   </Row>");
+				}
+				
+						
+					
+				
+				
+				out.println ("  </Table>");
+				
+				out.println ("  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>");
+				out.println ("   <PageSetup>");
+				
+				out.println ("    <Header x:Margin='0.3'");
+				out.println ("     x:Data='&amp;L&amp;12人數:"+elist.size()+" &amp;C&amp;20 "+info+"學生名單&amp;'/>");
+				
+				out.println ("    <Footer x:Margin='0.3'");
+				out.println ("     x:Data='&amp;R&amp;D-&amp;T&#10;第&amp;P頁 共&amp;N頁'/>");
+				
+				out.println ("    <PageMargins x:Bottom='0.75' x:Left='0.7' x:Right='0.7' x:Top='0.75'/>");
+				out.println ("   </PageSetup>");
+				out.println ("   <FitToPage/>");
+				out.println ("   <Print>");
+				out.println ("    <FitHeight>0</FitHeight>");
+				out.println ("    <ValidPrinterInfo/>");
+				out.println ("    <PaperSizeIndex>9</PaperSizeIndex>");
+				out.println ("    <Scale>52</Scale>");
+				out.println ("    <HorizontalResolution>600</HorizontalResolution>");
+				out.println ("    <VerticalResolution>600</VerticalResolution>");
+				out.println ("   </Print>");
+				out.println ("   <Selected/>");
+				out.println ("   <Panes>");
+				out.println ("    <Pane>");
+				out.println ("     <Number>3</Number>");
+				out.println ("     <ActiveRow>16</ActiveRow>");
+				out.println ("     <ActiveCol>7</ActiveCol>");
+				out.println ("    </Pane>");
+				out.println ("   </Panes>");
+				out.println ("   <ProtectObjects>False</ProtectObjects>");
+				out.println ("   <ProtectScenarios>False</ProtectScenarios>");
+				out.println ("  </WorksheetOptions>");
+				out.println (" </Worksheet>");
+			}
+			
+			
 		
 		
 		out.println ("</Workbook>");	

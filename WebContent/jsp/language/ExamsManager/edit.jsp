@@ -48,89 +48,130 @@ $(document).ready(function() {
   	<div><a href="#"><span>2</span> 修正考試</a></div>
   	<div><a href="#"><span>3</span> 列印考試資料</a></div>
 </div>
-<table class="table">
-	<tr>
-		<td class="control-group info">			
-			<div class="input-prepend">
-				<span class="add-on">梯次</span>
-				<input class="span1" id="level" name="level" value="${exam.level}" type="text" placeholder="ex.第1梯 or 加開梯">
-			</div>
-			&nbsp;
-			<div class="input-prepend">
-				<span class="add-on">場次</span>
-				<input class="span1" id="no" name="no" value="${exam.no}" placeholder="ex.第12場 or 上午場" type="text">
-			</div>
-			&nbsp;
-			<div class="input-prepend">
-				<span class="add-on">說明</span>
-				<input class="span4" id="note" name="note" value="${exam.note}" placeholder="ex.台北 or 新竹" type="text">
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<td class="control-group info" nowrap>		
-			<div class="input-prepend" style="float:left;">
-			<span class="add-on">1年級</span>
-			<input class="span1" name="grad1" id="grad1" value="${exam.grad1}" type="text" placeholder="上限">
-			</div>
-			&nbsp;
-			<div class="input-prepend">
-			<span class="add-on">2年級</span>
-			<input class="span1" name="grad2" id="grad2" value="${exam.grad2}" type="text" placeholder="上限">
-			</div>
-			&nbsp;
-			<div class="input-prepend">
-			<span class="add-on">3年級</span>
-			<input class="span1" name="grad3" id="grad3" value="${exam.grad3}" type="text" placeholder="上限">
-			</div>
-			&nbsp;
-			<div class="input-prepend" >
-			<span class="add-on">4年級</span>
-			<input class="span1" name="grad4" id="grad4" value="${exam.grad4}" type="text" placeholder="上限">
-			</div>
-		</td>		
-		
-	</tr>	
-	<tr>
-		<td class="control-group info">
-			<div class="input-prepend">
-			<span class="add-on">報名開始</span>
-			<input type="text" id="sign_begin" placeholder="點一下輸入日期時間" name="sign_begin" value="${exam.sign_begin}"/>
-			</div>
-			&nbsp;
-			<div class="input-prepend" >
-			<span class="add-on">報名截止</span>
-			<input class="span2" id="sign_end" placeholder="點一下輸入日期時間" name="sign_end" type="text" value="${exam.sign_end}"/>
-			</div>
-			
-		</td>		
-	</tr>
-	<tr>
-		<td class="control-group info">
-			<div class="input-prepend">
-			<span class="add-on">考試開始</span>
-			<input type="text" id="exam_begin" placeholder="點一下輸入日期時間" name="exam_begin" value="${exam.exam_begin}"/>
-			</div>
-			&nbsp;
-			<div class="input-prepend" >
-			<span class="add-on">考試結束</span>
-			<input class="span2" id="exam_end" placeholder="點一下輸入日期時間" name="exam_end" type="text" value="${exam.exam_end}"/>
-			</div>&nbsp;
-			<button class="btn btn-danger" name="method:save" type="submit">儲存變更</button>
-			<a href="ExamsManager"class="btn">返回</a>
-			
-		</td>		
-	</tr>
-</table>
+
     
 
 
 
-
+<div class="panel panel-primary">
+	<div class="panel-heading">建立活動</div>
+	<ul class="list-group">
+	  <li class="list-group-item"><span class="label label-as-badge label-warning">1</span> 同梯次同場次不可重複報名。</li>
+	  <li class="list-group-item"><span class="label label-as-badge label-danger">2</span> 請慎選梯次、場次和時間，以防止重複報名。</li>
+	  
+	</ul>
+	
+<table class="table">
+	<tr>
+		<td>
+			<div class="input-group">
+			  <span class="input-group-addon">梯次</span>
+			  <input class="form-control" id="level" placeholder="梯次" name="level" value="${exam.level}" type="text" style="ime-mode:disabled" onkeyup="return ValidateNumber($(this),value)"/>
+			</div>	
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div class="input-group">
+				<span class="input-group-addon">場次</span>
+				<input class="form-control" id="no" placeholder="場次" name="no" value="${exam.no}" type="text" style="ime-mode:disabled" onkeyup="return ValidateNumber($(this),value)"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>	
+			<div class="input-group">
+				<span class="input-group-addon">說明</span>
+				<input class="form-control" id="note" placeholder="說明" name="note" value="${exam.note}" type="text" style="ime-mode:disabled"/>
+			</div>
+		</td>
+	</tr>
+		
+	<tr>
+		<td>			
+			<div class="input-group">
+			<span class="input-group-addon">報名開始</span>
+			<input class="form-control pick" type="text" id="sign_begin" placeholder="報名開始時間" name="sign_begin" value="${exam.sign_begin}"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>	
+			<div class="input-group">
+			<span class="input-group-addon">報名截止</span>
+			<input class="form-control pick" id="sign_end" placeholder="報名截止時間" name="sign_end" type="text" value="${exam.sign_end}"/>
+			</div>
+			
+		</td>		
+	</tr>
+	<tr>
+		<td>
+			<div class="input-group">
+			<span class="input-group-addon">活動開始</span>
+			<input class="form-control pick" type="text" id="exam_begin" placeholder="考試開始時間" name="exam_begin" value="${exam.exam_begin}"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>	
+			<div class="input-group">
+			<span class="input-group-addon">活動結束</span>
+			<input class="form-control pick" id="exam_end" placeholder="考試結束時間" name="exam_end" type="text" value="${exam.exam_end}"/>
+			</div>			
+		</td>		
+	</tr>
+	<tr>
+		<td>		
+			<div class="input-group">
+			<span class="input-group-addon">1年級</span>
+			<input class="form-control" name="grad1" id="grad1" value="${exam.grad1}" type="text" placeholder="0" onkeyup="return ValidateNumber($(this),value)"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div class="input-group">
+			<span class="input-group-addon">2年級</span>
+			<input class="form-control" name="grad2" id="grad2" value="${exam.grad2}" type="text" placeholder="0" onkeyup="return ValidateNumber($(this),value)"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div class="input-group">
+			<span class="input-group-addon">3年級</span>
+			<input class="form-control" name="grad3" id="grad3" value="${exam.grad3}" type="text" placeholder="0" onkeyup="return ValidateNumber($(this),value)"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div class="input-group">
+			<span class="input-group-addon">4年級</span>
+			<input class="form-control" name="grad4" id="grad4" value="${exam.grad4}" type="text" placeholder="0" onkeyup="return ValidateNumber($(this),value)"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div class="input-group">
+			<span class="input-group-addon">教職員</span>
+			<input class="form-control" name="empls" id="empls" value="${exam.empls}" type="text" placeholder="0" onkeyup="return ValidateNumber($(this),value)"/>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<button class="btn btn-danger" name="method:save" type="submit">修改活動</button>
+			
+		</td>
+	</tr>
+</table>
+</div>
 </form>  
 
 <script>
-$("input[name='sign_begin'], input[name='sign_end'], input[name='exam_begin'], input[name='exam_end']" ).datetimepicker();
+$(".pick" ).datetimepicker();
 $(".uneditable-input").css("border-color", "#049cdb");
 </script>
 </body>

@@ -6,7 +6,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="/eis/inc/js/plugin/bootstrap-typeahead.js"></script>
-<script src="/eis/inc/js/plugin/json2.js"></script>
 <script src="/eis/inc/js/plugin/jquery-ui.js"></script>
 <script src="/eis/inc/js/plugin/bootstrap-tooltip.js"></script>
 <script type="text/javascript" src="/eis/inc/js/plugin/jquery-ui-timepicker-addon.js"></script>
@@ -122,6 +121,15 @@ function showApp(filename){
 
 <div class="panel panel-primary">
 	<div class="panel-heading">假單列表</div>	
+	<div id="collapseH" class="panel-collapse collapse" role="tabpaneH" aria-labelledby="headingH">
+			
+			<ul class="list-group">
+			<li class="list-group-item"><span class="label label-as-badge label-warning">1</span> 跨日/夜間修課請點選日/夜間課表查詢, 或直接以課程名稱查詢</li>
+			<li class="list-group-item"><span class="label label-as-badge label-warning">2</span> 管制加/退選的規則是由各系或各部制權責單位設定, 程式按照其設定提供同學進行選課</li>
+			<li class="list-group-item"><span class="label label-as-badge label-danger">3</span> 選課後的篩選工作由各部制權責單位決定是否進行, 若該單位決定採用第1階段選課, 表示該單位將執行人數過多的課程篩選</li>
+			</ul>
+			
+	    </div>
     <display:table pagesize="10" name="${dilgs}" id="row" class="table" sort="list" excludedParams="*" >
   	<display:column title="學生資訊"  sortable="true">
   	${row.ClassName}<br>${row.student_no}<br>${row.student_name}<br>
