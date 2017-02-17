@@ -101,7 +101,7 @@ function refla(){
 		<td>			
 			<div class="input-group">
 			<span class="input-group-addon">報名開始</span>
-			<input class="form-control pick" type="text" id="sign_begin" placeholder="報名開始時間" name="sign_begin" value="${sign_begin}"/>
+			<input readonly class="form-control pick" type="text" id="sign_begin" placeholder="報名開始時間" name="sign_begin" value="${sign_begin}"/>
 			</div>
 		</td>
 	</tr>
@@ -109,7 +109,7 @@ function refla(){
 		<td>	
 			<div class="input-group">
 			<span class="input-group-addon">報名截止</span>
-			<input class="form-control pick" id="sign_end" placeholder="報名截止時間" name="sign_end" type="text" value="${sign_end}"/>
+			<input readonly class="form-control pick" id="sign_end" placeholder="報名截止時間" name="sign_end" type="text" value="${sign_end}"/>
 			</div>
 			
 		</td>		
@@ -118,7 +118,7 @@ function refla(){
 		<td>
 			<div class="input-group">
 			<span class="input-group-addon">活動開始</span>
-			<input class="form-control pick" type="text" id="exam_begin" placeholder="考試開始時間" name="exam_begin" value="${exam_begin}"/>
+			<input readonly class="form-control pick" type="text" id="exam_begin" placeholder="活動開始時間" name="exam_begin" value="${exam_begin}"/>
 			</div>
 		</td>
 	</tr>
@@ -126,7 +126,7 @@ function refla(){
 		<td>	
 			<div class="input-group">
 			<span class="input-group-addon">活動結束</span>
-			<input class="form-control pick" id="exam_end" placeholder="考試結束時間" name="exam_end" type="text" value="${exam_end}"/>
+			<input readonly class="form-control pick" id="exam_end" placeholder="活動結束時間" name="exam_end" type="text" value="${exam_end}"/>
 			</div>			
 		</td>		
 	</tr>
@@ -187,15 +187,14 @@ function refla(){
     	<tr>
 	        <th nowrap>梯次</th>
 	        <th nowrap>場次</th>
-	        <th nowrap>說明</th>
+	        <th>說明</th>
 	        <th nowrap>報名期間</th>
-	        <th nowrap>考試期間</th>
+	        <th nowrap>活動期間</th>
 	        <th nowrap>1年級</th>
 	        <th nowrap>2年級</th>
 	        <th nowrap>3年級</th>
 	        <th nowrap>4年級</th>
 	        <th nowrap>教職員</th>
-	        <th></th>
       	</tr>
     </thead>
     <tbody>
@@ -203,22 +202,22 @@ function refla(){
 		<tr>
 	        <td nowrap>${e.level}</td>
 	        <td nowrap>${e.no}</td>
-	        <td nowrap>${e.note}</td>
-	        <td nowrap><span class="label label-info">${fn:substring(e.sign_begin, 5, 16)}</span> <span class="label label-info">${fn:substring(e.sign_end, 5, 16)}</span></td>	        
-	        <td nowrap><span class="label label-info">${fn:substring(e.exam_begin, 5, 16)}</span> <span class="label label-info">${fn:substring(e.exam_end, 5, 16)}</span></td>
-	        <td nowrap>${e.cnt1} / ${e.grad1}</td>
-	        <td nowrap>${e.cnt2} / ${e.grad2}</td>
-	        <td nowrap>${e.cnt3} / ${e.grad3}</td>
-	        <td nowrap>${e.cnt4} / ${e.grad4}</td>
-	        <td nowrap>${e.ecnt} / ${e.empls}</td>
-	        <td width="100%" nowrap><input type="hidden" id="Oid${e.Oid}" name="Oids" />
+	        <td>${e.note}<br>
+	        <input type="hidden" id="Oid${e.Oid}" name="Oids" />
 	        <div class="btn-group">
-	        <button class="btn btn-default btn-small" name="method:edit" onClick="refla(),$('#Oid${e.Oid}').val('${e.Oid}')" type="submit">編輯活動資訊</button>
-	        <button class="btn btn-default btn-small" name="method:printExam" onClick="refla(),$('#Oid${e.Oid}').val('${e.Oid}')" type="submit">列印名單</button>
-	        <button class="btn btn-default btn-danger btn-small" name="method:delete" onClick="refla(),$('#Oid${e.Oid}').val('${e.Oid}')" type="submit">刪除活動</button>
+	        <button class="btn btn-default btn-xs" name="method:edit" onClick="refla(),$('#Oid${e.Oid}').val('${e.Oid}')" type="submit">編輯</button>
+	        <button class="btn btn-default btn-xs" name="method:printExam" onClick="refla(),$('#Oid${e.Oid}').val('${e.Oid}')" type="submit">列印</button>
+	        <button class="btn btn-default btn-danger btn-xs" name="method:delete" onClick="refla(),$('#Oid${e.Oid}').val('${e.Oid}')" type="submit">刪除</button>
 	        </div>
 	        </td>
-      	</tr>     
+	        <td nowrap><span class="label label-primary">${fn:substring(e.sign_begin, 5, 16)}</span> <span class="label label-primary">${fn:substring(e.sign_end, 5, 16)}</span></td>	        
+	        <td nowrap><span class="label label-primary">${fn:substring(e.exam_begin, 5, 16)}</span> <span class="label label-primary">${fn:substring(e.exam_end, 5, 16)}</span></td>
+	        <td nowrap>${e.cnt1}/${e.grad1}</td>
+	        <td nowrap>${e.cnt2}/${e.grad2}</td>
+	        <td nowrap>${e.cnt3}/${e.grad3}</td>
+	        <td nowrap>${e.cnt4}/${e.grad4}</td>
+	        <td nowrap>${e.ecnt}/${e.empls}</td>
+      	</tr>	   
 	</c:forEach>
 	</tbody>
 </table>

@@ -27,7 +27,7 @@ public class DilgViewAction extends BaseAction{
 			"stmd.depart_class=Class.ClassNo AND abs!='2' AND abs !='5')as ds," +
 			"(SELECT COUNT(*)FROM Dilg, stmd WHERE Dilg.student_no=stmd.student_no AND " +
 			"stmd.depart_class=Class.ClassNo AND abs='2')as uds " +
-			"FROM Class WHERE Type='P' AND tutor='"+getSession().getAttribute("userid")+"'"));
+			"FROM Class WHERE stds>0 AND tutor='"+getSession().getAttribute("userid")+"'"));
 			return this.SUCCESS;
 		}else{	
 			request.setAttribute("myStudents", df.sqlGet("SELECT s.depart_class, s.student_no, s.student_name, s.CellPhone, s.telephone, " +
@@ -92,7 +92,7 @@ public class DilgViewAction extends BaseAction{
 		+ "st3.depart_class=cla.ClassNo AND bs.student_no=st3.student_no GROUP BY "
 		+ "cla.ClassNo)as bss ON(bss.depart_class=c.ClassNo)");
 		
-		sql.append("WHERE d.id=c.DeptNo AND c.Type='P'");
+		sql.append("WHERE d.id=c.DeptNo AND c.stds>0 ");
 		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
@@ -217,7 +217,7 @@ public class DilgViewAction extends BaseAction{
 		+ "s1.student_no=st1.student_no AND st1.depart_class=c.ClassNo)as scoreb,"
 		+ "(SELECT ROUND(IFNULL(AVG(CASE WHEN dilg8<=d1.dilg_avg8 then s1.score2 else null end),0),0)FROM BATCH_DTIME_DILG_STAT d1,BATCH_SELD_DILG_STAT s1, "
 		+ "stmd st1 WHERE d1.Dtime_oid=s1.Dtime_oid AND s1.student_no=st1.student_no AND st1.depart_class=c.ClassNo)as scoreg "
-		+ "FROM Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno WHERE c.Type='P'");
+		+ "FROM Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno WHERE c.stds>0 ");
 		
 		if(printType.equals("dtime"))
 			sql.append("SELECT (SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid AND(score2=0 OR score2 IS NULL))as zero,d.Oid,IFNULL(e.cname,'')as cname,(SELECT COUNT(*)FROM Seld WHERE Seld.Dtime_oid=d.Oid) as cnt,"
@@ -227,7 +227,7 @@ public class DilgViewAction extends BaseAction{
 			+ "BATCH_SELD_DILG_STAT s1 WHERE d1.Dtime_oid=s1.Dtime_oid AND d1.Dtime_oid=d.Oid)as scoreb,(SELECT ROUND(IFNULL(AVG(CASE WHEN "
 			+ "dilg8<=d1.dilg_avg8 then s1.score2 else null end),0),0)FROM BATCH_DTIME_DILG_STAT d1,BATCH_SELD_DILG_STAT s1 WHERE "
 			+ "d1.Dtime_oid=s1.Dtime_oid AND d1.Dtime_oid=d.Oid)as scoreg FROM Dtime d LEFT OUTER JOIN empl e ON d.techid=e.idno, "
-			+ "Csno cs,Class c  WHERE d.Sterm='"+getContext().getAttribute("school_term")+"'AND d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND c.Type='P'");
+			+ "Csno cs,Class c  WHERE d.Sterm='"+getContext().getAttribute("school_term")+"'AND d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND c.stds>0 ");
 		
 		
 		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
@@ -463,7 +463,7 @@ public class DilgViewAction extends BaseAction{
 
 		sql.append("(SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as sts,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor, "
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director FROM Class c, CODE_DEPT d WHERE "
-		+ "c.Type='p' AND c.DeptNo=d.id ");		
+		+ "c.stds>0 AND c.DeptNo=d.id ");		
 		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
@@ -574,7 +574,7 @@ public class DilgViewAction extends BaseAction{
 		}
 		sql.append("SUM((SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"'))as gstmds,SUM((SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo))as sts,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor, "
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director, IFNULL((SELECT cname FROM empl WHERE idno=cc.leader),'')as leader FROM Class c, CODE_DEPT d, CODE_COLLEGE cc WHERE "
-		+ "c.Type='p' AND c.DeptNo=d.id AND d.college=cc.id ");		
+		+ "c.stds>0 AND c.DeptNo=d.id AND d.college=cc.id ");		
 		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
@@ -679,7 +679,7 @@ public class DilgViewAction extends BaseAction{
 		}
 		sql.append("SUM((SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo))as sts,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor, "
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director, IFNULL((SELECT cname FROM empl WHERE idno=cc.leader),'')as leader FROM Class c, CODE_DEPT d, CODE_COLLEGE cc WHERE "
-		+ "c.Type='p' AND c.DeptNo=d.id AND d.college=cc.id ");		
+		+ "c.stds>0  AND c.DeptNo=d.id AND d.college=cc.id ");		
 		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
@@ -739,7 +739,7 @@ public class DilgViewAction extends BaseAction{
 	 */
 	public String nonexamPrint(){
 		StringBuilder sql=new StringBuilder("SELECT c.ClassNo, c.ClassName, e.cname FROM "
-		+ "Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno WHERE c.Type='P'");
+		+ "Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno WHERE c.stds>0 ");
 		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
@@ -817,7 +817,7 @@ public class DilgViewAction extends BaseAction{
 		"stmd.depart_class=c.ClassNo AND abs!='2' AND abs !='5')as ds," +
 		"(SELECT COUNT(*)FROM Dilg, stmd WHERE Dilg.student_no=stmd.student_no AND " +
 		"stmd.depart_class=c.ClassNo AND abs='2')as uds " +
-		"FROM Class c, CODE_DEPT d WHERE c.DeptNo=d.id AND c.Type='P'");
+		"FROM Class c, CODE_DEPT d WHERE c.DeptNo=d.id AND c.stds>0 ");
 		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");

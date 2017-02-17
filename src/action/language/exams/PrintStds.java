@@ -194,7 +194,7 @@ public class PrintStds {
 				out.println ("   <PageSetup>");
 				
 				out.println ("    <Header x:Margin='0.3'");
-				out.println ("     x:Data='&amp;L&amp;12人數:"+elist.size()+" &amp;C&amp;20 "+info+"學生名單&amp;'/>");
+				out.println ("     x:Data='&amp;L&amp;12人數:"+elist.size()+" &amp;C&amp;20 "+info+"教職員名單&amp;'/>");
 				
 				out.println ("    <Footer x:Margin='0.3'");
 				out.println ("     x:Data='&amp;R&amp;D-&amp;T&#10;第&amp;P頁 共&amp;N頁'/>");
