@@ -116,12 +116,14 @@ $(document).ready(function() {
 					<td>${w.chi_name}</td>
 					<td>	
 					<div class="btn-group" role="group" aria-label="...">			
-					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" id="ActLink" name="method:callOne" value="點名" class="btn btn-default"/>
-					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')"id="ActLink" name="method:callAll" value="到齊" class="btn btn-success"/>
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" name="method:callOne" value="點名" class="btn btn-default"/>
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" name="method:callAll" value="到齊" class="btn btn-success"/>
 					</div>
 					</td>
 					<td>
-					<c:if test="${!w.log}"><span class="label label-important">尚未編輯..</span></c:if> 
+					<c:if test="${!w.log}">
+					<button class="btn btn-danger" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" name="method:callOne">尚未編輯 <span class="badge">${w.select}</span></button>
+					</c:if> 
 					<c:if test="${w.log && empty w.info}"><span class="label label-success">全班到齊!</span></c:if> 
 					<c:if test="${w.log &&!empty w.info}">
 					<c:forEach items="${w.info}" var="f">
@@ -142,12 +144,14 @@ $(document).ready(function() {
 					<td>${w.chi_name}</td>
 					<td>	
 					<div class="btn-group" role="group" aria-label="...">			
-					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" id="ActLink" name="method:callOne" value="點名" class="btn btn-default"/>
-					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')"id="ActLink" name="method:callAll" value="到齊" class="btn btn-success"/>
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" name="method:callOne" value="點名" class="btn btn-default"/>
+					<input type="submit" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" name="method:callAll" value="到齊" class="btn btn-success"/>
 					</div>
 					</td>
 					<td>
-					<c:if test="${!w.log}"><span class="label label-important">尚未編輯..</span></c:if> 
+					<c:if test="${!w.log}">
+					<button class="btn btn-danger" onClick="$('#Oid').val('${w.dOid}'),$('#date').val('${w.date}'),$('#week').val('${w.week}')" name="method:callOne">尚未編輯 <span class="badge">${w.select}</span></button>
+					</c:if> 
 					<c:if test="${w.log && empty w.info}"><span class="label label-success">全班到齊!</span></c:if> 
 					<c:if test="${w.log &&!empty w.info}">
 					<c:forEach items="${w.info}" var="f">
@@ -189,11 +193,11 @@ $(document).ready(function() {
 					</div>
 				</td>
 				<td>
-				<c:if test="${!w.log}"><span class="label label-important">尚未編輯..</span></c:if> 
+				<c:if test="${!w.log}"><button class="btn btn-link" type="button">尚未編輯 <span class="badge">${w.select}</span></button></c:if> 
 					<c:if test="${w.log && empty w.info}"><span class="label label-success">全班到齊!</span></c:if> 
 					<c:if test="${w.log &&!empty w.info}">
 						<c:forEach items="${w.info}" var="f">
-							<span class="label label-info">第${f.cls}節 ${f.cnt}/${w.select}</span>
+							<span class="label label-default">第${f.cls}節 ${f.cnt}/${w.select}</span>
 						</c:forEach>
 					</c:if>
 				</td>
