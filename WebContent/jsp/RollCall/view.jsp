@@ -111,6 +111,7 @@
 					<c:if test="${d.abs eq '7'}"><option selected value="7">喪假</option></c:if>
 					<c:if test="${d.abs eq '8'}"><option selected value="8">婚假</option></c:if>
 					<c:if test="${d.abs eq '9'}"><option selected value="9">產假</option></c:if>
+					<c:if test="${d.abs eq '0'}"><option selected value="9">生理</option></c:if>
 				</select>
 				</c:if> 
 				
@@ -186,6 +187,7 @@
 					<c:if test="${d.abs eq '7'}"><option selected value="7">喪假</option></c:if>
 					<c:if test="${d.abs eq '8'}"><option selected value="8">婚假</option></c:if>
 					<c:if test="${d.abs eq '9'}"><option selected value="9">產假</option></c:if>
+					<c:if test="${d.abs eq '0'}"><option selected value="9">生理</option></c:if>
 				</select>
 				</c:if> 
 				
