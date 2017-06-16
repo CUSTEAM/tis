@@ -103,7 +103,6 @@ function drawChart() {
 				<td>學期</td>
 				<td>開課班級</td>
 				<td>科目名稱</td>
-				<td>選課人數</td>
 				<td>樣本數</td>
 				<td>有效樣本數</td>
 				<td>原始值</td>
@@ -117,7 +116,6 @@ function drawChart() {
 				<td>${c.school_term}</td>
 				<td>${c.ClassName}</td>
 				<td>${c.chi_name}</td>
-				<td>${c.stu_select}</td>
 				<td>${c.samples}</td>
 				<td>${c.effsamples}</td>
 				<td>${c.avg0}</td>
