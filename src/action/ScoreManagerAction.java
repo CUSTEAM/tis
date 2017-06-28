@@ -409,26 +409,23 @@ public class ScoreManagerAction extends BaseAction{
 				out.println ("    <Cell><Data ss:Type='String'></Data></Cell>");
 			}else{
 				out.println ("    <Cell><Data ss:Type='Number'>"+students.get(i).get("score10")+"</Data></Cell>");
-			}
-			
-			
+			}			
 			if(students.get(i).get("score1")==null){
 				out.println ("    <Cell><Data ss:Type='String'></Data></Cell>");
 			}else{
 				out.println ("    <Cell><Data ss:Type='Number'>"+students.get(i).get("score1")+"</Data></Cell>");
-			}
-				
-			
+			}			
 			out.println ("   </Row>");
 		}
 		
-		Map info=df.sqlGetMap("SELECT e.cname, cs.chi_name,cl.ClassName, cdo.name as opt, d.thour, d.credit, (SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid)as cnt FROM "
-				+ "Class cl,Dtime d, Csno cs, CODE_DTIME_OPT cdo, empl e WHERE cl.ClassNo=d.depart_class AND e.idno=d.techid AND d.opt=cdo.id AND d.cscode=cs.cscode AND d.Oid="+Dtime_oid);
+		Map info=df.sqlGetMap("SELECT e.cname, cs.chi_name,cl.ClassName, cdo.name as opt, d.thour, d.credit,"
+		+ "(SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid)as cnt FROM Class cl,Dtime d LEFT OUTER "
+		+ "JOIN empl e ON e.idno=d.techid, Csno cs, CODE_DTIME_OPT cdo WHERE cl.ClassNo=d.depart_class AND "
+		+ "d.opt=cdo.id AND d.cscode=cs.cscode AND d.Oid="+Dtime_oid);
 		out.println ("  </Table>");
 		out.println ("  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>");
 		out.println ("   <PageSetup>");
-		out.println ("    <Header x:Margin='0.31496062992125984'");
-		
+		out.println ("    <Header x:Margin='0.31496062992125984'");		
 		out.println ("     x:Data='&amp;L&amp;8"+info.get("opt")+", "+info.get("credit")+"學分, "+info.get("thour")+"小時, &#10;學生"+info.get("cnt")+"人&#10;授課教師 "+info.get("cname")+"&amp;C&amp;&quot;微軟正黑體,標準&quot;中華科技大學 "+getContext().getAttribute("school_year")+"學年第 "+getContext().getAttribute("school_term")+"學期"+info.get("ClassName")+"成績冊&#10;"+info.get("chi_name")+"'/>");
 		out.println ("    <Footer x:Margin='0.31496062992125984' x:Data='&amp;L&amp;D&amp;R&amp;P/&amp;N'/>");
 		out.println ("    <PageMargins x:Bottom='0.74803149606299213' x:Left='0.23622047244094491'");
