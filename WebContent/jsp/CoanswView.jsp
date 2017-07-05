@@ -8,8 +8,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>教學評量</title>
-<script src="/eis/inc/js/plugin/ChartJS/ChartJS.min.js"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="/eis/inc/js/plugin/ChartJS/Chart2.6.min.js"></script>
+<script src="/eis/inc/js/plugin/ChartJS/Chart2.6.BgColor.js"></script>
+<script src="/eis/inc/js/plugin/ChartJS/Chart2.6.LnColor.js"></script>
 <link rel="stylesheet" href="/eis/inc/css/advance/autoscale_1152.css" />
 <script> 
 
@@ -20,58 +21,6 @@ $(document).ready(function() {
 	}, 0);
 	$(".collapse").collapse();	
 });
-
-google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(drawChart);
-
-function drawChart() {	
-	var data = google.visualization.arrayToDataTable([
-	    ['課程', '50為基準', '0為基準'],
-	    
-	    <c:forEach items="${lineData}" var="l">
-	    ['${l.ClassName}${l.chi_name}', ${l.score},${l.score1}],
-	    </c:forEach>
-  	]);
-
-  	var options = {
-  		colors: ['#51a1c4','#dddddd'],
-	    //title: 'Company Performance',
-	    //hAxis: {title: '課程', titleTextStyle: {color: '#cccccc'}}
-  		vAxis: {
-  	        //title: 'temps (ms)',
-  	        viewWindowMode: 'explicit',
-  	        viewWindow: {
-  	          max: 100,
-  	          min: 50
-  	        },
-  	        gridlines: {
-  	          count: 10,
-  	          
-  	        }
-  	      }
-  	};
-
-  	var chart = new google.visualization.ColumnChart(document.getElementById('lineChart'));
-  	chart.draw(data, options);
-  
-  //餅
-  data = google.visualization.arrayToDataTable([
-    ['類型', '百分比'],
-    ['有效問卷${eff}份',     ${eff}],
-    ['無效問卷${sam}份',      ${sam}],
-    ['未填寫${cnt}份',  ${cnt}]
-  ]);
-
-  var options = {
-	colors: ['#51a1c4', '#dddddd', '#ec8f6e'],
-    //title: 'My Daily Activities'
-  };
-
-  chart = new google.visualization.PieChart(document.getElementById('pieChart'));
-  chart.draw(data, options);
-}
-
-
 
 
 
@@ -89,14 +38,17 @@ function drawChart() {
 			<a data-toggle="collapse" style="color:#ffffff;" data-parent="#accordion2" href="#coll">點選檢視歷年資料</a>
 		</div>
 		
+		<table class="table">
+			<tr><td><span class="label label-as-badge label-warning">1</span> 僅採用有效問卷統計</td></tr>
+			<tr><td><span class="label label-as-badge label-danger">2</span> 將各科目原始平均值1至5分對應20至100分</td></tr>
+			<tr><td><span class="label label-as-badge label-danger">3</span> 作答人數列表提供問卷答案供驗算</td></tr>
+		</table>
+		
+		
 		<div id="coll" class="accordion-body collapse in">
 			<div class="accordion-inner">
 			
-			<div class="panel-body">
-		    	<p><span class="label label-as-badge label-danger">1</span> 統計過程僅採用有效問卷</p>
-		    	<p><span class="label label-as-badge label-warning">2</span> 原始值以0為基準建立統計</p>
-		    	<p><span class="label label-as-badge label-warning">3</span> 加權值以50為基準建立統計</p>
-			</div>			
+						
 			<table class="table">
 			<tr>
 				<td>學年</td>
@@ -105,8 +57,7 @@ function drawChart() {
 				<td>科目名稱</td>
 				<td>樣本數</td>
 				<td>有效樣本數</td>
-				<td>原始值</td>
-				<td>加權值</td>
+				<td>平均值</td>
 			</tr>
 			<c:forEach items="${years}" var="y">
 			
@@ -119,7 +70,6 @@ function drawChart() {
 				<td>${c.samples}</td>
 				<td>${c.effsamples}</td>
 				<td>${c.avg0}</td>
-				<td>${c.avg}</td>
 			</tr>
 			</c:forEach>
 			</c:forEach>
@@ -134,16 +84,13 @@ function drawChart() {
 
 <div class="panel panel-primary">
   	<div class="panel-heading">問卷結果統計</div>
-  	<div class="panel-body">
-    	<p>藍色區塊以50為基準, 由1至5分對應60至100分</p>
-    	<p>灰色區塊以0為基準, 由1至5分對應20至100分</p>
+  	<div class="panel-body">    	
+  		<p>點選與藍色區塊顯示班級課程名稱</p>
   	</div>
 	<table class="table table-bordered">
 		<tr>
 			<td>
-	
-			<div id="lineChart" style="height:340px;"></div>
-			
+			<canvas id="lineChart" height="150"></canvas>			
 			</td>
 		</tr>
 	</table>
@@ -174,30 +121,19 @@ function drawChart() {
 <div class="panel panel-primary">
   	<div class="panel-heading">問卷題目作答分析</div>
   	<div class="panel-body">
-    	<p>圖表已排除無效問卷, 僅顯示有效問卷</p>
-    	<p>圖表中反向延伸處代表偵錯題</p>
-  	</div>
-	<table class="table table-bordered" style="position: relative;">
-		<tr>
-			<td>
-			<div class="input-group">
+    	<div class="input-group">
     		<span class="input-group-addon">選擇班級</span>
 			<select class="form-control"onChange="changeData4Radar(this.value)">
-					<c:forEach  items="${coansw}" var="c" varStatus="s">
-					<option value="${s.index}">${c.ClassName}${c.chi_name}</option>
-					</c:forEach>
-				</select>
-			</div>
-			<center><canvas id="radarChart" height="300"></canvas></center>
-					
-			
-				
-					
-			
-			</td>
-		</tr>
-	</table>
+				<c:forEach  items="${coansw}" var="c" varStatus="s">
+				<option value="${s.index}">${c.ClassName}${c.chi_name}</option>
+				</c:forEach>
+			</select>
+		</div>
+  	</div>
+  	<table class="table table-bordered"><tr><td><canvas id="radarChart" height="150"></canvas></td></tr></table>
 </div>
+	
+
 
 <div class="panel panel-primary">
   	<div class="panel-heading">問卷題目列表</div>
@@ -206,7 +142,7 @@ function drawChart() {
 		<tr>
 			<td nowrap><small>第${l.sequence}題</small></td>
 			<td width="100%"><small>${l.question}<c:if test="${!empty l.debug}">
-			<span class="label label-info">偵錯題</span></c:if></small></td>
+			<span class="label label-danger">偵錯題</span></c:if></small></td>
 		</tr>
 		</c:forEach>
 	</table>
@@ -216,14 +152,13 @@ function drawChart() {
 <div class="panel panel-primary">
   	<div class="panel-heading">作答人數統計</div>
   	<div class="panel-body">
-    	<p>藍色區塊以50為基準, 由1至5分對應60至100分</p>
-    	<p>灰色區塊以0為基準, 由1至5分對應20至100分</p>
+    	<p>有效問卷: ${eff}, 無效: ${sam}, 未作答: ${cnt}</p>
   	</div>
 	<table class="table table-bordered">
 		<tr>
 			<td>
-			<div id="pieChart" style="height:310px;"></div>
-			<span class="label label-important">樣本數統計</span>
+			
+			<canvas id="pieChart" height="150"></canvas>
 			</td>
 		</tr>
 	</table>
@@ -231,10 +166,6 @@ function drawChart() {
 
 <div class="panel panel-primary">
   	<div class="panel-heading">作答人數列表</div>
-  	<div class="panel-body">
-    	<p>藍色區塊以50為基準, 由1至5分對應60至100分</p>
-    	<p>灰色區塊以0為基準, 由1至5分對應20至100分</p>
-  	</div>
 	<table class="table">
 		<tr>
 			<td nowrap>班級</td>
@@ -263,62 +194,127 @@ function drawChart() {
 </div>
 
 <script>
-
-
-
-
-var chartData= {
-	labels : [<c:forEach items="${labels}" var="q">"第${q.sequence}題",</c:forEach>],
-	datasets : [	            
-		{
-			fillColor : "rgba(220,220,220,0.2)",
-			strokeColor : "${coansw[0].color}",
-			pointColor : "${coansw[0].color}",
-			pointStrokeColor : "${coansw[0].color}",
-			data : [${coansw[0].coansw}]
-		}
-	]
-}
-
-var chart = new Chart(document.getElementById("radarChart").getContext("2d")).Radar(chartData,{
-	scaleShowLabels:true, 
-	pointLabelFontSize:12, 
-	//angleLineWidth:1, 
-	//pointDotRadius:1, 
-	//datasetStrokeWidth:1
+//bar
+var ctx = document.getElementById("lineChart");
+var chart = new Chart(ctx, {
+    //type: 'horizontalBar',    
+    type: 'bar',
+    data: { 
+    	labels: [
+    	<c:forEach items="${lineData}" var="l">
+    	"${l.ClassName},${l.chi_name}",
+    	</c:forEach>],        
+        datasets: [{
+            label: '平均值',            
+            backgroundColor:[<c:forEach items="${lineData}">"rgba(46,109,164, 0.7)",</c:forEach>],
+            borderColor:[<c:forEach items="${lineData}">"rgba(46,109,164, 1)",</c:forEach>],
+            data: [<c:forEach items="${lineData}" var="l">${l.score},</c:forEach>],               
+            borderWidth: 1
+        }]
+    },
+    options: {
+    	//responsive: true,
+    	scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false,
+                    //display: false,
+                    //mirror:false,
+                    stepSize: 5,
+                    suggestedMin: 50,
+                    suggestedMax: 100,
+                }
+            }],
+    
+            xAxes: [{
+                display: false,
+                //barPercentage: 0.4,
+                //barThickness : 73,
+            }],
+            
+        },
+    
+        legend: { 
+            display: false 
+        },
+        responsive: true,
+      
+    }
 });
 
-
-
+//radar
+ctx = document.getElementById("radarChart");
+chart = new Chart(ctx, { 
+    type: 'radar',
+    data: { 
+    	labels: [<c:forEach items="${labels}" var="q">"第${q.sequence}題",</c:forEach>],
+        datasets: [{
+            label: '平均值',            
+            backgroundColor:["rgba(46,109,164, 0.7)",],
+            borderColor:["rgba(46,109,164, 1)",],
+            data: [${coansw[0].coansw}],
+            borderWidth: 1
+        }]
+    },
+    options: {    
+        legend: { 
+            display: false 
+        },      
+    }
+});
 var ds=[
-<c:forEach  items="${coansw}" var="c" varStatus="s">
- 	{
-		labels : [<c:forEach items="${labels}" var="q">"第${q.sequence}題",</c:forEach>],		
-		datasets : [			            
-			{
-				fillColor : "rgba(220,220,220,0.2)",
-				strokeColor : "${c.color}",
-				pointColor : "${c.color}",
-				pointStrokeColor : "${c.color}",
-				data : [${c.coansw}]
-			}				
-		]
+<c:forEach items="${coansw}" var="c" varStatus="s">
+ 	{ 	
+	 	labels: [<c:forEach items="${labels}" var="q">"第${q.sequence}題",</c:forEach>],
+	    datasets: [{
+	        label: '平均值',            
+	        backgroundColor:["rgba(46,109,164, 0.7)",],
+	        borderColor:["rgba(46,109,164, 1)",],
+	        data: [${c.coansw}],
+	        borderWidth: 1
+	    }]
 	},
 </c:forEach>
 ]
 
 function changeData4Radar(i){	
-	chart = new Chart(document.getElementById("radarChart").getContext("2d")).Radar(ds[i],{
-		//scaleOverlay : true,
-		//scaleOverride : true,
-		//animation : false,
-		scaleShowLabels:true, 
-		pointLabelFontSize:12, 
-		//angleLineWidth:2, 
-		//pointDotRadius:2, 
-		//datasetStrokeWidth:2
+	ctx = document.getElementById("radarChart");
+	chart = new Chart(ctx, { 
+	    type: 'radar',
+	    data: ds[i],
+	    options: {    
+	        legend: { 
+	            display: false 
+	        },      
+	    }
 	});
 }
+
+//pie
+ctx = document.getElementById("pieChart");
+chart = new Chart(ctx, { 
+    type: 'polarArea',    
+    data:{ 
+    	datasets: [{
+            data: [${eff}, ${sam}, ${cnt}],
+            //backgroundColor:BgColors,
+            //borderColor:LnColors,
+            //backgroundColor:LnColors,
+            //backgroundColor:['#51a1c4', '#ec8f6e', '#dddddd']
+    		backgroundColor:["rgba(81,161,196, 0.7)","rgba(236,143,110, 0.7)","rgba(221,221,221, 0.7)",],
+        }],        
+        labels: [
+            '有效問卷',
+            '無效問卷',
+            '未作答'
+        ]
+    },
+    options: {    
+        legend: { 
+            display: false 
+        },      
+    }
+});
 </script>
 </body>
 </html>

@@ -62,7 +62,7 @@ public class CoanswViewAction extends BaseAction{
 		List<Map>savdtime;
 		for(int i=0; i<years.size(); i++){
 			savdtime=df.sqlGet(
-					"SELECT d.school_term, c.ClassName, cs.chi_name, d.samples, d.effsamples, d.avg,d.avg0 " +
+					"SELECT d.school_term, c.ClassName, cs.chi_name, d.samples, d.effsamples,d.avg0 " +
 					"FROM Savedtime d, Class c, Csno cs WHERE d.depart_class=c.ClassNo AND " +
 					"d.cscode=cs.cscode AND d.techid='"+getSession().getAttribute("userid")+"'AND " +
 					"d.school_year='"+years.get(i).get("school_year")+"' ORDER BY d.school_term");
