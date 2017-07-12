@@ -41,7 +41,7 @@ $(document).ready(function() {
 		<table class="table">
 			<tr><td><span class="label label-as-badge label-warning">1</span> 僅採用有效問卷統計</td></tr>
 			<tr><td><span class="label label-as-badge label-danger">2</span> 將各科目原始平均值1至5分對應20至100分</td></tr>
-			<tr><td><span class="label label-as-badge label-danger">3</span> 作答人數列表提供問卷答案供驗算</td></tr>
+			<tr><td><span class="label label-as-badge label-danger">3</span> 作答人數列表提供問卷原始資料下載</td></tr>
 		</table>
 		
 		

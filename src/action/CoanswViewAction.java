@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import action.BaseAction;
+import model.Message;
 
 public class CoanswViewAction extends BaseAction{
 	
@@ -11,6 +12,9 @@ public class CoanswViewAction extends BaseAction{
 	
 	public String execute(){
 		
+		Message msg=new Message();
+		msg.setMsg("自105學年起, 依規定不再顯示加權值統計結果");
+		this.savMessage(msg);
 		//TODO 遠距???
 		List<Map>labels=df.sqlGet("SELECT * FROM Question WHERE topic='1' ORDER BY sequence");
 		
