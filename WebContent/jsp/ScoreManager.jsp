@@ -53,7 +53,6 @@
 <div class="bs-callout bs-callout-warning" id="callout-helper-pull-navbar">
 	<h4>成績開放設定</h4>
 	編輯期間自開學起, <b>期中考</b>至<fmt:formatDate pattern="M月d日H時m分" value="${date_exam_mid}"/>前, <b>期末考</b>至<fmt:formatDate pattern="M月d日H時m分" value="${date_exam_fin}"/>前<c:if test="${school_term eq'2'}">, <b>畢業考</b>至<fmt:formatDate pattern="M月d日H時m分" value="${date_exam_grad}"/>前</c:if>
-	
 </div> 
 <div class = "panel panel-primary">
 	<div class = "panel-heading">課程列表</div>

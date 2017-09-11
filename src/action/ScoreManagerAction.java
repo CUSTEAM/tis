@@ -18,9 +18,19 @@ public class ScoreManagerAction extends BaseAction{
 	
 	public String Dtime_oid,type,p1,p2,p3;
 	
-	public String execute(){		
+	private void checkDate(Date now){		
+		if(now.getTime()>((Date)getContext().getAttribute("date_exam_fin_view")).getTime()){
+			Message msg=new Message();
+			msg.setError("<h3>成績行事曆提示</h3> 系統偵測到1個或多個成績相關的設定有誤<br>若目前為開學期間, 可能會有非預期操作顯示");
+			this.savMessage(msg);
+		}
+	}
+	
+	public String execute(){
+		
+		checkDate(new Date());
+		
 		String term=(String)getContext().getAttribute("school_term");		
-		//get single teacher list
 		List<Map>myClass=df.sqlGet("SELECT cdo.fname, d.credit,cl.className, (SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid AND score IS NOT NULL)as sf, (SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid)as st,"
 		+ "(SELECT COUNT(*)FROM Seld WHERE Dtime_oid=d.Oid AND score2 IS NOT NULL)as s2f,"
 		+ "cs.chi_name, d.Oid, cs.cscode, cl.classNo, d.Sterm FROM CODE_DTIME_OPT cdo, Dtime d, Csno cs, Class cl "+ 
@@ -91,14 +101,17 @@ public class ScoreManagerAction extends BaseAction{
 			c.setTime(edper);
 			c.add(Calendar.DAY_OF_YEAR, 14);//開學14天
 			edper=c.getTime();
-			if(now.getTime()>edper.getTime()){
+			
+			if(now.getTime()<edper.getTime()){				
 				request.setAttribute("edper", sf.format(edper));
 			}
 		}catch(Exception e){
 			Message msg=new Message();
 			msg.setError("開學日期無法辨識");
 			savMessage(msg);
-		}
+		}	
+		
+		checkDate(now);
 		
 		//get score percentage
 		Map map=df.sqlGetMap("SELECT * FROM SeldPro WHERE Dtime_oid="+Dtime_oid);
@@ -204,6 +217,7 @@ public class ScoreManagerAction extends BaseAction{
 	 */
 	public String editPro() throws ParseException{
 		Message msg=new Message();
+		if(p1==null)return SUCCESS;
 		if(!p1.trim().equals("")&&!p2.trim().equals("")&&!p3.trim().equals("")){
 			if(Integer.parseInt(p1)+Integer.parseInt(p2)+Integer.parseInt(p3)==100){
 				df.exSql("DELETE FROM SeldPro WHERE Dtime_oid="+Dtime_oid);

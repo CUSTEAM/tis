@@ -26,15 +26,15 @@
 		<td></td>
 		<td></td>
 		<td align="right"><span class="label label-warning">成績比例</span></td>
-		<td><div class="input-group"><input type="text" size="2" class="form-control" id="p1" name="p1" class="span1 editPro" <c:if test="${!empty edper}">readonly</c:if> value="${seldpro.score1}"/><span class="input-group-addon" id="basic-addon2">%</span></div></td>
-		<td><div class="input-group"><input type="text" size="2" class="form-control" id="p2" name="p2" class="span1 editPro" <c:if test="${!empty edper}">readonly</c:if> value="${seldpro.score2}"/><span class="input-group-addon" id="basic-addon2">%</span></div></td>
-		<td><div class="input-group"><input type="text" size="2" class="form-control" id="p3" name="p3" class="span1 editPro" <c:if test="${!empty edper}">readonly</c:if> value="${seldpro.score3}"/><span class="input-group-addon" id="basic-addon2">%</span></div>	
+		<td><div class="input-group"><input type="text" size="2" class="form-control epro" id="p1" name="p1" value="${seldpro.score1}"/><span class="input-group-addon">%</span></div></td>
+		<td><div class="input-group"><input type="text" size="2" class="form-control epro" id="p2" name="p2" value="${seldpro.score2}"/><span class="input-group-addon">%</span></div></td>
+		<td><div class="input-group"><input type="text" size="2" class="form-control epro" id="p3" name="p3" value="${seldpro.score3}"/><span class="input-group-addon">%</span></div>	
 		</td>
 		<td nowrap>
-		<c:if test="${empty edper}">		
+		<c:if test="${!empty edper}">		
 		<button type="submit" id="editPro" class="btn btn-success" name="method:editPro">儲存</button>
 		</c:if>
-		<c:if test="${!empty edper}"><small>${fn:substring(edper, 0, 10)}<br>截止變更</small></c:if>
+		<c:if test="${empty edper}"><small>${fn:substring(edper, 0, 10)}<br>截止變更</small></c:if>
 		</td>
 	</tr>
 	<tr>
@@ -123,7 +123,11 @@
   </div>
 </div>
 <script>
-<c:if test="${!empty date2}">$("input").prop("disabled", true);$(".save").prop("disabled", true);</c:if>
+<c:if test="${!empty date2}">
+$("input").prop("disabled", true);
+$(".save").prop("disabled", true);
+$(".epro").prop("disabled", false);
+</c:if>
 var p1=parseInt($("#p1").val());
 var p2=parseInt($("#p2").val());
 var p3=parseInt($("#p3").val());
