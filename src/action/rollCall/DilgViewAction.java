@@ -440,16 +440,9 @@ public class DilgViewAction extends BaseAction{
 		
 		int sts;
 		Calendar begin=Calendar.getInstance();
-		begin.setTime((Date) getContext().getAttribute("date_rollcall_begin"));
-		
-		
-		
-		
+		begin.setTime((Date) getContext().getAttribute("date_rollcall_begin"));		
 		
 		StringBuilder sql=new StringBuilder("SELECT c.ClassName,(SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"')as gstmds,");
-		
-		
-		
 		for(int i=1; i<=17; i++){			
 			sql.append("(SELECT COUNT(*)FROM Dilg di, stmd st WHERE abs IN(");
 			for(int j=0; j<filter.length; j++){
@@ -460,11 +453,9 @@ public class DilgViewAction extends BaseAction{
 			begin.add(Calendar.DAY_OF_YEAR, 7);
 			sql.append("AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo)as cnt"+i+",");
 		}
-
 		sql.append("(SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as sts,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor, "
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director FROM Class c, CODE_DEPT d WHERE "
-		+ "c.stds>0 AND c.DeptNo=d.id ");		
-		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
+		+ "c.stds>0 AND c.DeptNo=d.id AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
 		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
@@ -564,25 +555,29 @@ public class DilgViewAction extends BaseAction{
 		out.println ("    <Cell><Data ss:Type='String'>系主任</Data><NamedCell ss:Name='Print_Titles'/></Cell>");
 		out.println ("    <Cell><Data ss:Type='String'>院長</Data><NamedCell ss:Name='Print_Titles'/></Cell>");
 		out.println ("   </Row>");		
-		begin.setTime((Date) getContext().getAttribute("date_rollcall_begin"));
-		sql=new StringBuilder("SELECT d.name,");
+		begin.setTime((Date) getContext().getAttribute("date_rollcall_begin"));		
+		sql=new StringBuilder("SELECT d.name,");			
 		for(int i=1; i<=17; i++){			
 			//sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE (abs!='5'&&abs!='6')AND di.date>='"+sf.format(begin.getTime())+"'");
-			sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE abs!='5'AND di.date>='"+sf.format(begin.getTime())+"'");
+			sql.append("SUM((SELECT COUNT(*)FROM Dilg di, stmd st WHERE abs IN(");
+			for(int j=0; j<filter.length; j++){
+				sql.append("'"+filter[j]+"',");
+			}
+			sql.delete(sql.length()-1, sql.length());
+			sql.append(")AND di.date>='"+sf.format(begin.getTime())+"'");
 			begin.add(Calendar.DAY_OF_YEAR, 7);
 			sql.append("AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
 		}
 		sql.append("SUM((SELECT COUNT(*)FROM Gstmd WHERE occur_status IN('1', '2', '5')AND depart_class=c.ClassNo AND occur_year='"+getContext().getAttribute("school_year")+"'AND occur_term='"+getContext().getAttribute("school_term")+"'))as gstmds,SUM((SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo))as sts,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor, "
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director, IFNULL((SELECT cname FROM empl WHERE idno=cc.leader),'')as leader FROM Class c, CODE_DEPT d, CODE_COLLEGE cc WHERE "
-		+ "c.stds>0 AND c.DeptNo=d.id AND d.college=cc.id ");		
-		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
+		+ "c.stds>0 AND c.DeptNo=d.id AND d.college=cc.id AND c.CampusNo='"+cno+"'");
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
 		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
 		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");
-		//if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
-		//if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");		
-		sql.append("GROUP BY c.DeptNo");	
+		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
+		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");	
+		sql.append("GROUP BY c.DeptNo");		
 		list=df.sqlGet(sql.toString());
 		sts=0;
 		for(int i=0; i<list.size(); i++){	
@@ -675,16 +670,23 @@ public class DilgViewAction extends BaseAction{
 			+ "di.date>='"+sf.format(begin.getTime())+"'");
 			begin.add(Calendar.DAY_OF_YEAR, 7);
 			//sql.append("AND (di.abs!='6'AND di.abs!='5')AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
-			sql.append("AND di.abs!='5'AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
+			sql.append("AND di.abs IN(");
+			for(int j=0; j<filter.length; j++){
+				sql.append("'"+filter[j]+"',");
+			}
+			sql.delete(sql.length()-1, sql.length());
+			sql.append(")AND di.date<'"+sf.format(begin.getTime())+"'AND di.student_no=st.student_no AND st.depart_class=c.ClassNo))as cnt"+i+",");
+		
 		}
 		sql.append("SUM((SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo))as sts,IFNULL((SELECT cname FROM empl WHERE idno=c.tutor),'')as tutor, "
 		+ "IFNULL((SELECT cname FROM empl WHERE idno=d.director),'')as director, IFNULL((SELECT cname FROM empl WHERE idno=cc.leader),'')as leader FROM Class c, CODE_DEPT d, CODE_COLLEGE cc WHERE "
-		+ "c.stds>0  AND c.DeptNo=d.id AND d.college=cc.id ");		
-		if(!cno.equals(""))sql.append("AND c.CampusNo='"+cno+"'");
+		+ "c.stds>0  AND c.DeptNo=d.id AND d.college=cc.id AND c.CampusNo='"+cno+"'");		
 		if(!cono.equals(""))sql.append("AND d.college='"+cono+"'");
 		if(!stno.equals(""))sql.append("AND c.SchoolType='"+stno+"'");
 		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
-		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");	
+		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");
+		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
+		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");	
 		sql.append("GROUP BY d.college");
 		list=df.sqlGet(sql.toString());
 		sts=0;

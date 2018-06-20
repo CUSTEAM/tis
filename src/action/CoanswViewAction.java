@@ -35,10 +35,16 @@ public class CoanswViewAction extends BaseAction{
 		request.setAttribute("coansw", list);
 		
 		//line chart
-		List<Map>lineData=df.sqlGet("SELECT cs.chi_name, c.ClassName, "
+		/*List<Map>lineData=df.sqlGet("SELECT cs.chi_name, c.ClassName, "
 				+ "IFNULL(ROUND( 50+ ((d.coansw/d.effsamples))*10 ,2),0)as score, IFNULL(ROUND(((d.coansw/d.effsamples))*20 ,2),0)as score1,"
 				+ "d.effsamples, d.samples FROM Dtime d, Csno cs, Class c WHERE samples>0 AND d.Sterm='"+getContext().getAttribute("school_term")+
+				"' AND d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND d.techid='"+getSession().getAttribute("userid")+"'");*/
+		
+		List<Map>lineData=df.sqlGet("SELECT cs.chi_name, c.ClassName, "
+				+ "IFNULL(    ROUND((d.coansw/d.effsamples)*20 ,2),0)as score, IFNULL(ROUND(((d.coansw/d.effsamples))*20 ,2),0)as score1,"
+				+ "d.effsamples, d.samples FROM Dtime d, Csno cs, Class c WHERE samples>0 AND d.Sterm='"+getContext().getAttribute("school_term")+
 				"' AND d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND d.techid='"+getSession().getAttribute("userid")+"'");
+		
 		for(int i=0; i<lineData.size(); i++){
 			lineData.get(i).put("color", color[i]);
 		}

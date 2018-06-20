@@ -16,6 +16,7 @@ public class RollCallAction extends BaseAction{
 	
 	Calendar c=Calendar.getInstance();//現在時間
 	SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");		
+	//SimpleDateFormat sf1=new SimpleDateFormat("M月d日");	
 	
 	public String execute() throws Exception {				
 		
@@ -29,7 +30,7 @@ public class RollCallAction extends BaseAction{
 		}
 		
 		//每周點名模版		
-		List list=df.sqlGet("SELECT d.Oid as dOid, cl.CampusNo,  cl.SchoolNo, " +
+		List<Map>list=df.sqlGet("SELECT d.Oid as dOid, cl.CampusNo,  cl.SchoolNo, " +
 		"dc.*, cl.ClassName, cs.chi_name FROM Dtime d, Csno cs, Class cl, Dtime_class dc " +
 		"WHERE d.cscode=cs.cscode AND d.depart_class=cl.ClassNo AND d.Oid=dc.Dtime_oid AND " +
 		"d.Sterm='"+getContext().getAttribute("school_term")+"' AND d.techid='"+getSession().getAttribute("userid")+"'");
@@ -40,7 +41,8 @@ public class RollCallAction extends BaseAction{
 		"d.Sterm='"+getContext().getAttribute("school_term")+"' AND dt.teach_id='"+getSession().getAttribute("userid")+"'"));
 		
 		//目前8天
-		List<Map>callInfo=getCallInfo(rollcall_begin, rollcall_end, list, 8);
+		List<Map>callInfo=getCallInfo(rollcall_begin, rollcall_end, list, 8, true);		
+		
 		//重大集會
 		List<Map>tmp=df.sqlGet("SELECT did.Oid, c.ClassNo, c.ClassName, did.name as chi_name,did.date,dic.edit FROM "
 		+ "Dilg_imp_date did, Dilg_imp_class dic, Class c WHERE c.ClassNo=dic.ClassNo AND dic.Dilg_imp_date_oid=did.Oid AND "
@@ -48,17 +50,77 @@ public class RollCallAction extends BaseAction{
 		callInfo=bm.sortListByKey(callInfo, "sdate", true);
 		tmp.addAll(callInfo);		
 		request.setAttribute("weeks", tmp);
+		
 		//8天前的130天只可讀
-		if(session.get("oldweeks")==null){
-			getSession().setAttribute("myCs", 
+		//if(session.get("oldweeks")==null){
+			//課程照理說不會在此當下被課務單位修改
+			getSession().setAttribute("myCs", //因此存定課程
 			df.sqlGet("SELECT d.Oid, cs.chi_name, c.ClassName FROM Dtime d, Csno cs, Class c WHERE " +
 			"d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND d.techid='"+getSession().getAttribute("userid")+"' AND d.Sterm='"+getContext().getAttribute("school_term")+"'"));
-			getSession().setAttribute("oldweeks", bm.sortListByKey(getCallInfo(rollcall_begin, rollcall_end, list, 130), "sdate", true));
-		}		
+			
+			
+			getSession().setAttribute("oldweeks", bm.sortListByKey(getCallInfo(rollcall_begin, rollcall_end, list, 130, false), "sdate", true));
+		//}		
 		//圖表
-		request.setAttribute("chart", sam.Dilg_pro_techid((String) getSession().getAttribute("userid"), rollcall_begin, getContext().getAttribute("school_term").toString()));
+		//request.setAttribute("chart", sam.Dilg_pro_techid((String) getSession().getAttribute("userid"), rollcall_begin, getContext().getAttribute("school_term").toString()));
+		
+		
+		Calendar c=Calendar.getInstance();
+		Calendar c1=Calendar.getInstance();
+		Calendar c2;
+		
+		list=df.sqlGet("SELECT ((SELeCT COUNT(*)FROM stmd, Seld WHERE stmd.student_no=Seld.student_no AND Seld.Dtime_oid=d.Oid)*d.thour) as cnt, d.Oid, cl.ClassName, cs.chi_name FROM Dtime d, " +
+		"Csno cs, Class cl WHERE d.cscode=cs.cscode AND d.depart_class=cl.ClassNo AND d.techid='"+getSession().getAttribute("userid")+"' AND d.Sterm='"+getContext().getAttribute("school_term")+"'");
+		
+		//float cnt;
+		
+		for(int i=0; i<list.size(); i++){
+			
+			c.setTime(rollcall_begin);
+			c1.setTime(rollcall_begin);
+			c2=Calendar.getInstance();			
+			
+			
+			list.get(i).put("hist", getWeek(list.get(i), c, c1, c2));
+			
+		}
+		request.setAttribute("chart", list);
+		
+		
+		
+		
+		
+		
+		
 		return "intro";
 	}	
+	
+	
+	private List getWeek(Map cs, Calendar c, Calendar c1, Calendar c2){
+		float abs, cnt;
+		List tmp=new ArrayList();
+		Map m;
+		for(int j=1; j<19; j++){
+			m=new HashMap();
+			c1.add(Calendar.DAY_OF_YEAR, 7);
+			c2.setTime(c1.getTime());
+			c2.add(Calendar.DAY_OF_YEAR, -1);
+			cnt=Float.parseFloat(cs.get("cnt").toString());
+			abs=Float.parseFloat(df.sqlGetStr("SELECT COUNT(*)FROM Dilg WHERE date>='" +
+			sf.format(c.getTime())+"'AND date<='"+sf.format(c2.getTime())+"' AND Dtime_oid="+cs.get("Oid")));
+			
+			m.put("abs", abs);
+			m.put("par", 100.0f-((abs/cnt)*100));
+			tmp.add(m);
+			//System.out.println(m);
+			c.add(Calendar.DAY_OF_YEAR, 7);
+			
+		}
+		
+		
+		return tmp;
+		
+	}
 	
 	/**
 	 * 重大集會點名
@@ -81,8 +143,8 @@ public class RollCallAction extends BaseAction{
 	 * @param cs
 	 * @return
 	 */
-	private List getCallInfo(Date rollcall_begin, Date rollcall_end, List list, int day){
-		
+	private List getCallInfo(Date rollcall_begin, Date rollcall_end, List<Map>list, int day, boolean thisweek){
+		Calendar cl=Calendar.getInstance();
 		Map map;
 		int week;		
 		
@@ -114,18 +176,22 @@ public class RollCallAction extends BaseAction{
 					continue;
 				}
 				
-				if((int)((Map)list.get(j)).get("week")==week){
+				if((int)list.get(j).get("week")==week){
 					map=new HashMap();
 					map.putAll((Map)list.get(j));					
 					DilgLog_date=sf.format(c.getTime());
 					Dtime_oid=map.get("dOid").toString();					
 					try{
 						//當日應到
-						DilgLog_date_due=sam.DilgLog_date_due(Dtime_oid, DilgLog_date);
+						DilgLog_date_due=sam.DilgLog_date_due(Dtime_oid, DilgLog_date);				
+						
+						
 					}catch(Exception e){
 						DilgLog_date_due=0;
 					}					
-					map.put("date", DilgLog_date);
+					map.put("date", sf.format(c.getTime()));
+					map.put("showDate", c.getTime());
+					map.put("shoWeek", bl.getWeekOfDay4Zh(week, ""));
 					map.put("sdate", c.getTimeInMillis());
 					
 					//檔日有點名記錄
@@ -138,8 +204,20 @@ public class RollCallAction extends BaseAction{
 						map.put("info", "0人");
 						map.put("log", false);
 					}
+					try{
+						map.put("weather", df.sqlGetMap("SELECT w.*, DATE_FORMAT(w.ftime,'%m月%d日%h:%i%p')as ftime FROM WeatherHist w WHERE w.ftime='"+DilgLog_date+" "+(Integer.parseInt(map.get("begin").toString())+8)+":00'"));
+						if(thisweek){
+							cl.setTime(sf.parse(DilgLog_date));
+							cl.add(Calendar.DAY_OF_YEAR, 7);
+							map.put("nextw", df.sqlGetMap("SELECT w.*, DATE_FORMAT(w.ftime,'%m月%d日%h:%i%p')as ftime FROM WeatherHist w WHERE w.ftime='"+sf.format(cl.getTime())+" "+(Integer.parseInt(map.get("begin").toString())+8)+":00'"));
+						}
+					
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 					
 					myCs.add(map);
+					//System.out.println(map);
 				}		
 								
 			}
@@ -181,24 +259,9 @@ public class RollCallAction extends BaseAction{
 			//重複
 		}		
 		
-		Map map=df.sqlGetMap("SELECT d.Oid, c.ClassName, cs.chi_name FROM " +
-		"Dtime d, Class c, Csno cs WHERE cs.cscode=d.cscode AND d.depart_class=c.ClassNo  AND d.Oid="+Oid);
-		map.put("week", week);
-		map.put("date", date);
-		request.setAttribute("info", map);
+		initCall();
 		
-		
-		//判斷取全班或取分組
-		List stds;
-		if(df.sqlGetInt("SELECT COUNT(*) FROM Dtime_teacher dt, Dtime d WHERE dt.Dtime_oid=d.Oid AND (d.techid='' OR d.techid IS NULL)AND " +
-		"dt.Dtime_oid="+Oid+" AND dt.teach_id='"+getSession().getAttribute("userid")+"'")>0){
-			stds=this.Dilg_student_date(Oid, date, week);//取分組
-		}else{
-			stds=sam.Dilg_student_date(Oid, date, week);//取全班
 			
-		}		
-		request.setAttribute("students", stds);
-		request.setAttribute("dclass", sam.Dtime_class(Oid, week));		
 		return "rollCall";
 		
 	}
@@ -231,14 +294,38 @@ public class RollCallAction extends BaseAction{
 		return list;
 	}
 	
-	public String viewOne(){
+	private void initCall(){
+		
 		Map map=df.sqlGetMap("SELECT d.Oid, c.ClassName, cs.chi_name FROM " +
+		"Dtime d, Class c, Csno cs WHERE cs.cscode=d.cscode AND d.depart_class=c.ClassNo  AND d.Oid="+Oid);
+		map.put("week", week);
+		map.put("date", date);
+		request.setAttribute("info", map);
+		
+		
+		//判斷取全班或取分組
+		List stds;
+		if(df.sqlGetInt("SELECT COUNT(*) FROM Dtime_teacher dt, Dtime d WHERE dt.Dtime_oid=d.Oid AND (d.techid='' OR d.techid IS NULL)AND " +
+		"dt.Dtime_oid="+Oid+" AND dt.teach_id='"+getSession().getAttribute("userid")+"'")>0){
+			stds=this.Dilg_student_date(Oid, date, week);//取分組
+		}else{
+			stds=sam.Dilg_student_date(Oid, date, week);//取全班
+			
+		}		
+		request.setAttribute("students", stds);
+		request.setAttribute("dclass", sam.Dtime_class(Oid, week));	
+		
+	}
+	
+	public String viewOne(){
+		/*Map map=df.sqlGetMap("SELECT d.Oid, c.ClassName, cs.chi_name FROM " +
 		"Dtime d, Class c, Csno cs WHERE cs.cscode=d.cscode AND d.depart_class=c.ClassNo  AND d.Oid="+Oid);
 		map.put("week", week);
 		map.put("date", date);
 		request.setAttribute("info", map);		
 		request.setAttribute("students", sam.Dilg_student_date(Oid, date, week));		
-		request.setAttribute("dclass", sam.Dtime_class(Oid, week));	
+		request.setAttribute("dclass", sam.Dtime_class(Oid, week));	*/
+		initCall();
 		return "rollView";
 	}
 	

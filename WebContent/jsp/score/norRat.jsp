@@ -127,6 +127,9 @@
 $("input").prop("disabled", true);
 $(".save").prop("disabled", true);
 $(".epro").prop("disabled", false);
+$("#Dtime_oid").prop("disabled", false);
+$("#type").prop("disabled", false);
+
 </c:if>
 var p1=parseInt($("#p1").val());
 var p2=parseInt($("#p2").val());
