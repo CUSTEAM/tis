@@ -65,5 +65,13 @@
 <script src="/eis/inc/bootstrap/plugin/silviomoreto-bootstrap-select/js/bootstrap-select.min.js"></script>
 <script src="/eis/inc/bootstrap/plugin/silviomoreto-bootstrap-select/js/i18n/defaults-zh_TW.min.js"></script>
 <script src="/eis/inc/js/advance.js"></script>
+<script>
+var timer;
+setInterval(function() {
+	$.getJSON('onlineCheck', function(d){	
+		ipin=JSON.stringify(d, null, 2);
+	});
+}, 10000); 
+</script>
 </body>
 </html>

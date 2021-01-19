@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +35,7 @@
 		<c:if test="${!empty edper}">		
 		<button type="submit" id="editPro" class="btn btn-success" name="method:editPro">儲存</button>
 		</c:if>
-		<c:if test="${empty edper}"><small>${fn:substring(edper, 0, 10)}<br>截止變更</small></c:if>
+		<c:if test="${empty edper}"><small>${fn:substring(edper, 0, 10)}<br>${edper}截止變更</small></c:if>
 		</td>
 	</tr>
 	<tr>

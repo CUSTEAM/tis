@@ -29,7 +29,7 @@
 			<result name="Relogin">/index.jsp</result>
 		</global-results>
 	</package>
-	
+	<include file="struts-ajax.xml" />
 	<include file="struts-page.xml" />
 	<include file="struts-print.xml" />
 </struts>

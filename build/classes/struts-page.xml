@@ -75,6 +75,13 @@
 		<action name="CareForStudents" class="action.CareForStudentsAction">
 			<result>/jsp/CareForStudents.jsp</result>
 		</action>
+		
+		
+		<action name="GraduateJustSort" class="action.GraduateJustSortAction">
+			<result>/jsp/GraduateJustSort.jsp</result>
+		</action>
+		
+		
 	</package>	
 	
 	<package name="elearning" extends="abstract_struts" namespace="/">		

@@ -6,10 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import action.BaseAction;
+import action.BasePrintXmlAction;
 import model.Message;
 
-public class DilgImpDateManagerAction extends BaseAction{
+public class DilgImpDateManagerAction extends BasePrintXmlAction{
 	
 	public String name;
 	public String date,begin,end;
@@ -97,9 +97,7 @@ public class DilgImpDateManagerAction extends BaseAction{
 	public String printNote() throws IOException{
 		
 		Date date=new Date();
-		response.setContentType("text/html; charset=UTF-8");
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");				
+		xml2ods(response, getRequest(), date);		
 		PrintWriter out=response.getWriter();	
 		
 		
@@ -467,13 +465,11 @@ public class DilgImpDateManagerAction extends BaseAction{
 			+ "WHERE di.Dilg_imp_date_oid="+Oid+" AND di.student_no=s.student_no AND s.depart_class=c.ClassNo AND c.DeptNo='"
 			+dept.get(i).get("id")+"'ORDER BY c.ClassNo, s.student_no");
 			
-			
-			
 			out.println (" <Worksheet ss:Name='"+dept.get(i).get("name")+"'>");
 			out.println ("  <Names>");
 			out.println ("   <NamedRange ss:Name='Print_Titles' ss:RefersTo='="+dept.get(i).get("name")+"!R1'/>");
 			out.println ("  </Names>");
-			out.println ("  <Table ss:ExpandedColumnCount='9' ss:ExpandedRowCount='"+(stds.size()+50)+"' x:FullColumns='1'");
+			out.println ("  <Table ss:ExpandedColumnCount='9' ss:ExpandedRowCount='"+(stds.size()+999)+"' x:FullColumns='1'");
 			out.println ("   x:FullRows='1' ss:StyleID='s22' ss:DefaultColumnWidth='54'");
 			out.println ("   ss:DefaultRowHeight='15.75'>");
 			out.println ("   <Column ss:StyleID='s22' ss:AutoFitWidth='0' ss:Width='100.5'/>");
@@ -496,7 +492,7 @@ public class DilgImpDateManagerAction extends BaseAction{
 			
 			
 			if(stds.size()>0){
-				for(int j=1; j<stds.size(); j++){
+				for(int j=0; j<stds.size(); j++){
 					out.println ("   <Row>");
 					out.println ("    <Cell ss:StyleID='s23'><Data ss:Type='String'>"+stds.get(j).get("ClassName")+"</Data></Cell>");
 					out.println ("    <Cell ss:StyleID='s24'><Data ss:Type='String'>"+stds.get(j).get("student_no")+"</Data></Cell>");
@@ -608,9 +604,7 @@ public class DilgImpDateManagerAction extends BaseAction{
 	 */
 	public String printStat() throws IOException{
 		Date date=new Date();
-		response.setContentType("text/html; charset=UTF-8");
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");				
+		xml2ods(response, getRequest(), date);
 		PrintWriter out=response.getWriter();	
 		
 		

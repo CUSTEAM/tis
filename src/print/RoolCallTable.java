@@ -1,22 +1,21 @@
 package print;
 
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import action.BaseAction;
 
-public class RoolCallTable extends BaseAction{
+import action.BasePrintXmlAction;
+
+public class RoolCallTable extends BasePrintXmlAction{
 	//TODO 沒空
 	public String execute()throws Exception {
-		response.setContentType("text/html; charset=UTF-8");
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition", "attachment;filename=RoolCallTable.xls");
-		
+		xml2ods(response, getRequest(), new Date());
 		PrintWriter out = response.getWriter();		
 		String Oid=request.getParameter("Oid");
 		Map map=df.sqlGetMap("SELECT cl.ClassName, cs.chi_name FROM Class cl, Csno cs, Dtime d WHERE d.depart_class=cl.ClassNo AND d.cscode=cs.cscode AND d.Oid="+Oid);
 		String dtimeOid = request.getParameter("dtimeOid");
-		List list = df.sqlGet("SELECT st.student_no, st.student_name FROM Seld s, stmd st WHERE s.student_no=st.student_no AND s.Dtime_oid="+Oid+" ORDER BY st.student_no");
+		List<Map>list = df.sqlGet("SELECT st.sex, st.student_no, st.student_name FROM Seld s, stmd st WHERE s.student_no=st.student_no AND s.Dtime_oid="+Oid+" ORDER BY st.student_no");
 		
 		out.println("<html>");
 
@@ -38,6 +37,7 @@ public class RoolCallTable extends BaseAction{
 		out.println("  <tr>");
 		out.println("		<td align='center'>學號</td>");
 		out.println("		<td align='center'>姓名</td>");
+		out.println("		<td align='center'>性別</td>");
 		out.println("		<td align='center'>&nbsp; 1</td>");
 		out.println("		<td align='center'>&nbsp; 2</td>");
 		out.println("		<td align='center'>&nbsp; 3</td>");
@@ -64,8 +64,17 @@ public class RoolCallTable extends BaseAction{
 				} else {
 					out.println("  <tr bgcolor='#eeeeee'>");
 				}					
-				out.println("		<td align='left' style='mso-number-format:\\@'>"+((Map)list.get(i)).get("student_no")+"</td>");
-				out.println("		<td align='left'>"+((Map)list.get(i)).get("student_name")+"</td>");
+				out.println("		<td align='left' style='mso-number-format:\\@'>"+list.get(i).get("student_no")+"</td>");
+				out.println("		<td align='left'>"+list.get(i).get("student_name")+"</td>");
+				
+				if(list.get(i).get("sex").equals("1")) {
+					out.println("		<td align='center'>男</td>");
+				}else {
+					out.println("		<td align='center'>女</td>");
+				}
+				
+				
+				
 				out.println("		<td align='center'></td>");
 				out.println("		<td align='center'></td>");
 				out.println("		<td align='center'></td>");

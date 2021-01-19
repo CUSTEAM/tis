@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	
+	<package name="ajax" extends="struts-default, json-default" namespace="/">
+		<!-- 記錄線上人數 -->
+		<action name="onlineCheck" class="ajax.onlineCheck">
+		    <result type="json"/>
+		</action>
+	</package>
+
+</struts>

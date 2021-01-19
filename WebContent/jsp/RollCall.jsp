@@ -175,7 +175,9 @@
   		<div class="panel panel-primary">
     		<div class="panel-heading" role="tab" id="headingTwo">
       			<h4 class="panel-title">
-        			<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">${fn:substring(school_term_begin, 5, 10)} 至 ${fn:substring(oldweeks[0].date, 5, 10)}</a>
+        			<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        			${fn:substring(school_term_begin, 5, 10)} 至 ${fn:substring(oldweeks[0].date, 5, 10)}
+        			<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-hand-down" aria-hidden="true"></span> 請點選查看全部記錄</button></a>
       			</h4>
     		</div>
     		<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
@@ -204,7 +206,7 @@
 					<c:forEach items="${oldweeks}" var="w">
 						<tr>
 							<td>${fn:substring(w.date, 5, 10)}</td>
-							<td>${w.ClassName}<br>${w.begin}至${w.end}節</td>
+							<td><small>${w.begin}至${w.end}節</small><br>${w.ClassName}</td>
 							<td>${w.dOid}<br>${w.chi_name}</td>
 							<td>
 								<div class="btn-group" role="group" aria-label="...">

@@ -23,7 +23,7 @@
 		<listener-class>
 			service.listener.ContextSetupListener
 		</listener-class>
-	</listener>
+	</listener>	
 
 	<filter>
 		<filter-name>sitemesh</filter-name>

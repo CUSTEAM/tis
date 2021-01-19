@@ -33,6 +33,8 @@
             	<value>model/DilgApplyHist.hbm.xml</value>
             	<value>model/Just.hbm.xml</value>
             	<value>model/Seld.hbm.xml</value>
+            	<value>model/SysLog.hbm.xml</value>
+            	<value>model/SysLogSecurity.hbm.xml</value>
             </list>
         </property>
     </bean>

@@ -88,8 +88,11 @@ public class DilgAppAction extends BaseAction{
 						d.setRealLevel(String.valueOf(Integer.parseInt(d.getRealLevel())+1));	
 						//尋找下一層審核者
 						String nexter;
-						if(d.getRealLevel().equals("2")){//2階改為系主任
-							nexter=df.sqlGetStr("SELECT cd.director FROM CODE_DEPT cd, Class c, stmd s WHERE cd.id=c.DeptNo AND c.ClassNo=s.depart_class AND s.student_no='"+d.getStudent_no()+"'");
+						if(d.getRealLevel().equals("2")){
+							//2階改為系主任
+							//nexter=df.sqlGetStr("SELECT cd.director FROM CODE_DEPT cd, Class c, stmd s WHERE cd.id=c.DeptNo AND c.ClassNo=s.depart_class AND s.student_no='"+d.getStudent_no()+"'");
+							//2階改為副主任
+							nexter=df.sqlGetStr("SELECT cd.director_deputy FROM CODE_DEPT cd, Class c, stmd s WHERE cd.id=c.DeptNo AND c.ClassNo=s.depart_class AND s.student_no='"+d.getStudent_no()+"'");
 							//為防止系主任為空缺
 							if(nexter==null||nexter.equals("")){
 								nexter=df.sqlGetStr("SELECT d.idno FROM stmd s, Dilg_charge d, Class c WHERE " +
@@ -125,13 +128,21 @@ public class DilgAppAction extends BaseAction{
 	
 	public String search(){
 		
-		StringBuilder sb=new StringBuilder("SELECT dr.name, d.*, s.student_no, s.student_name, c.ClassName FROM Dilg_apply d, stmd s, Class c, Dilg_rules dr WHERE " +
+		StringBuilder sb;
+		
+		
+		
+		sb=new StringBuilder("SELECT dr.name, d.*, s.student_no, s.student_name, c.ClassName FROM Dilg_apply d, stmd s, Class c, Dilg_rules dr WHERE " +
 		"dr.id=d.abs AND c.ClassNo=s.depart_class AND s.student_no=d.student_no AND d.result IS NOT NULL AND d.auditor='"+
 		getSession().getAttribute("userid")+"'");		
 		if(!begin.trim().equals("")){sb.append("AND d.cr_date>='"+begin+"'");}		
 		if(!end.trim().equals("")){sb.append("AND d.cr_date<='"+end+"'");}		
 		if(!stdNo.trim().equals("")){sb.append("AND d.student_no='"+stdNo+"'");}		
-		sb.append("ORDER BY d.cr_date DESC");		
+		sb.append("ORDER BY d.cr_date DESC");	
+		
+		
+		
+		
 		List list=df.sqlGet(sb.toString());
 		for(int i=0; i<list.size(); i++){
 			((Map)list.get(i)).put("abss", 

@@ -10,9 +10,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import action.BaseAction;
+import action.BasePrintXmlAction;
 
-public class DilgViewAction extends BaseAction{
+public class DilgViewAction extends BasePrintXmlAction{
 	
 	public String execute() throws Exception {
 		
@@ -312,8 +312,7 @@ public class DilgViewAction extends BaseAction{
 	 */
 	public String print() throws IOException{
 		Date date=new Date();
-		response.setContentType("application/vnd.ms-excel; charset=UTF-8");
-		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");				
+		xml2ods(response, getRequest(), date);
 		PrintWriter out=response.getWriter();
 		out.println ("<?xml version='1.0'?>");
 		out.println ("<?mso-application progid='Excel.Sheet'?>");

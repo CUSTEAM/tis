@@ -171,7 +171,10 @@ $(document).ready(function() {
 </form>  
 
 <script>
-$(".pick" ).datetimepicker();
+$(".pick" ).datetimepicker({
+	changeMonth: true,
+	changeYear: true
+});
 $(".uneditable-input").css("border-color", "#049cdb");
 </script>
 </body>

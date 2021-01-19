@@ -191,7 +191,10 @@ function showApp(filename){
 </div>
 </form>
 <script>
-$("input[name='begin'], input[name='end']" ).datepicker();
+$("input[name='begin'], input[name='end']" ).datepicker({
+	changeMonth: true,
+	changeYear: true
+});
 </script>
 </body>
 </html>

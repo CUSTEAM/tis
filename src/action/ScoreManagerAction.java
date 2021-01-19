@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +13,7 @@ import java.util.Map;
 import model.Message;
 import model.Seld;
 
-public class ScoreManagerAction extends BaseAction{
+public class ScoreManagerAction extends BasePrintXmlAction{
 	
 	public String Dtime_oid,type,p1,p2,p3;
 	
@@ -99,13 +98,15 @@ public class ScoreManagerAction extends BaseAction{
 			edper=(Date)getContext().getAttribute("date_school_term_begin");				
 			Calendar c=Calendar.getInstance();
 			c.setTime(edper);
+			System.out.println(edper);
 			c.add(Calendar.DAY_OF_YEAR, 14);//開學14天
 			edper=c.getTime();
-			
+			System.out.println(edper);
 			if(now.getTime()<edper.getTime()){				
 				request.setAttribute("edper", sf.format(edper));
 			}
 		}catch(Exception e){
+			e.printStackTrace();
 			Message msg=new Message();
 			msg.setError("開學日期無法辨識");
 			savMessage(msg);
@@ -240,9 +241,7 @@ public class ScoreManagerAction extends BaseAction{
 	public String printScore1() throws IOException{		
 		getStds();		
 		Date date=new Date();
-		response.setContentType("text/html; charset=UTF-8");
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");
+		xml2ods(response, getRequest(), date);
 		PrintWriter out=response.getWriter();
 		
 		out.println ("<?xml version='1.0'?>");

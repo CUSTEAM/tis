@@ -125,7 +125,10 @@ $(document).ready(function() {
 	</c:if>
 </form>
 <script>
-$("#date").datepicker();
+$("#date").datepicker({
+	changeMonth: true,
+	changeYear: true
+});
 $("#begin").timepicker();
 $("#end").timepicker();
 </script>
