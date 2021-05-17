@@ -41,7 +41,8 @@ public class RollCallAction extends BaseAction{
 		"d.Sterm='"+getContext().getAttribute("school_term")+"' AND dt.teach_id='"+getSession().getAttribute("userid")+"'"));
 		
 		//目前8天
-		List<Map>callInfo=getCallInfo(rollcall_begin, rollcall_end, list, 8, true);		
+		//2021-05-17孫主任告知學務長要求改為30天，依常理推斷為31天。
+		List<Map>callInfo=getCallInfo(rollcall_begin, rollcall_end, list, 31, true);		
 		
 		//重大集會
 		List<Map>tmp=df.sqlGet("SELECT did.Oid, c.ClassNo, c.ClassName, did.name as chi_name,did.date,dic.edit FROM "
@@ -53,23 +54,20 @@ public class RollCallAction extends BaseAction{
 		
 		//8天前的130天只可讀
 		//if(session.get("oldweeks")==null){
-			//課程照理說不會在此當下被課務單位修改
+		//課程照理說不會在此當下被課務單位修改
 		List<Map>myCs=df.sqlGet("SELECT d.Oid, cs.chi_name, c.ClassName FROM Dtime d, Csno cs, Class c WHERE " +
 		"d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND d.techid='"+getSession().getAttribute("userid")+"' AND d.Sterm='"+getContext().getAttribute("school_term")+"'");
+		
+		
+		
+		
 		
 		myCs.addAll(df.sqlGet("SELECT d.Oid, cs.chi_name, c.ClassName FROM Dtime d, Csno cs, Class c, Dtime_teacher dt WHERE " + 
 		"d.Oid=dt.Dtime_oid AND d.cscode=cs.cscode AND d.depart_class=c.ClassNo AND dt.teach_id='"+getSession().getAttribute("userid")+"' AND d.Sterm='"+getContext().getAttribute("school_term")+"'"));
 		
 		//因此存死課程
 		getSession().setAttribute("myCs",myCs );
-			
-			
-			
-			
-			
-			
-			
-			getSession().setAttribute("oldweeks", bm.sortListByKey(getCallInfo(rollcall_begin, rollcall_end, list, 130, false), "sdate", true));
+		getSession().setAttribute("oldweeks", bm.sortListByKey(getCallInfo(rollcall_begin, rollcall_end, list, 130, false), "sdate", true));
 		//}		
 		//圖表
 		//request.setAttribute("chart", sam.Dilg_pro_techid((String) getSession().getAttribute("userid"), rollcall_begin, getContext().getAttribute("school_term").toString()));
